@@ -21,8 +21,6 @@ It aims to:
 
 ### Problem
 
-### Problem
-
 Students often struggle to organize their academic workload efficiently. Tasks, study sessions, and deadlines are frequently scattered across different tools, which can lead to missed deadlines, poor prioritization, and limited visibility into overall learning progress.
 
 ---
