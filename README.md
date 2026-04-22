@@ -1,6 +1,6 @@
 # 📚 StudyPlanner – Study Planning Reference Project (Browser App)
 
-![UI Showcase](docs/ui-images/ui_showcase.png)
+UI SHOWCASE BILD EINFÜGEN
 
 ---
 
