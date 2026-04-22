@@ -1,4 +1,4 @@
-# 📚 StudyPlanner – Study Planning Reference Project (Browser App)
+# 📚 StudyPlanner – Study Planning
 
 UI SHOWCASE BILD EINFÜGEN
 
