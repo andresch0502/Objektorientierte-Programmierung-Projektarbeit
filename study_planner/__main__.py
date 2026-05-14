@@ -4,4 +4,4 @@ from study_planner.application import setup_app
 
 
 setup_app()
-ui.run()
+ui.run(reload=False)
