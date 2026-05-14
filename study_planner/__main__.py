@@ -1,5 +1,7 @@
-from study_planner.application import start
+from nicegui import ui
+
+from study_planner.application import setup_app
 
 
-if __name__ in {"__main__", "__mp_main__"}:
-    start()
+setup_app()
+ui.run()
