@@ -36,12 +36,18 @@ class TaskService:
         session: Session,
         title: str,
         deadline: date | None = None,
+        planned_date: date | None = None,
+        estimated_minutes: int = 0,
+        priority: str = "medium",
         notes: str = "",
         subject_id: int | None = None,
     ) -> Task:
         task = Task(
             title=title,
             deadline=deadline,
+            planned_date=planned_date,
+            estimated_minutes=estimated_minutes,
+            priority=priority,
             notes=notes,
             subject_id=subject_id,
         )
