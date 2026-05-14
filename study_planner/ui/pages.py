@@ -1,10 +1,16 @@
 from nicegui import ui
 
-from study_planner.ui.controllers import add_subject, get_app_title, get_subjects
+from study_planner.ui.controllers import (
+    add_subject,
+    get_app_title,
+    get_subjects,
+    get_tasks,
+)
 
 
 def show_home_page() -> None:
     ui.label(get_app_title())
+
     ui.label("Subjects")
 
     name_input = ui.input("Subject name")
@@ -32,3 +38,17 @@ def show_home_page() -> None:
     ui.button("Add subject", on_click=handle_add_subject)
 
     refresh_subject_list()
+
+    ui.separator()
+    ui.label("Tasks")
+
+    task_list = ui.column()
+
+    def refresh_task_list() -> None:
+        task_list.clear()
+        with task_list:
+            tasks = get_tasks()
+            for task in tasks:
+                ui.label(task.title)
+
+    refresh_task_list()
