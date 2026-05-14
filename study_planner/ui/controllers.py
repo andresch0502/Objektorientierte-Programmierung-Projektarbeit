@@ -38,3 +38,8 @@ def add_task(
 ) -> Task:
     with database.session_scope() as session:
         return task_service.create_task(session, title, description, deadline, subject_id)
+
+
+def complete_task(task_id: int) -> Task | None:
+    with database.session_scope() as session:
+        return task_service.complete_task(session, task_id)
