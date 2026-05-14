@@ -96,3 +96,50 @@ The application allows users to:
 - Admin  
 
 ---
+
+### Wireframes / Mockups
+
+
+
+---
+
+## 🏛️ Architecture
+
+<img width="1223" height="695" alt="image" src="https://github.com/user-attachments/assets/1da9430e-ebb2-4398-a1ca-af227dd117ce" />
+
+
+## Layers
+- **UI:** NiceGUI (browser-based interface)
+- **Application logic:** controllers and services
+- **Persistence:** SQLite + ORM + data access (DAO)
+
+## Design Decisions
+- MVC structure (Model–View–Controller)
+- Clear separation of concerns
+- Business logic independent of UI
+
+## Design Patterns Used
+- **Model–View–Controller / Layered MVC Variant:** NiceGUI pages and controllers handle interaction, services implement the use cases, and persistence is separated into DAO/DB components.
+- **Data Access Object (DAO):** DAOs isolate database queries and persistence from business logic.
+- **Facade Pattern:** a database/facade component can centralize engine creation, schema setup, and session handling.
+
+
+---
+
+## 🗄️ Database and ORM
+
+<img width="1385" height="506" alt="image" src="https://github.com/user-attachments/assets/4dd34835-a784-4e59-a393-41990b725de7" />
+
+
+The application uses **SQLModel** to map domain objects to a SQLite database.
+
+### Entities
+- `User`
+- `Subject`
+- `Task`
+
+### Relationships
+- One `User` → many `Subject`
+- One `Subject` has many `Task`
+
+---
