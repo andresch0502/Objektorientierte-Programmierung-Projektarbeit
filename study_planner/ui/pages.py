@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from nicegui import ui
 
 from study_planner.ui.controllers import (
@@ -21,6 +23,7 @@ def show_home_page() -> None:
 
     task_title_input = ui.input("Task title")
     task_description_input = ui.input("Task description")
+    deadline_input = ui.input("Deadline (YYYY-MM-DD)")
     subject_select = ui.select(options={}, label="Subject")
 
     task_list = ui.column()
@@ -46,7 +49,8 @@ def show_home_page() -> None:
         with task_list:
             tasks = get_tasks()
             for task in tasks:
-                ui.label(task.title)
+                deadline_text = f" (Deadline: {task.deadline})" if task.deadline else ""
+                ui.label(f"{task.title}{deadline_text}")
 
     def handle_add_subject() -> None:
         if not name_input.value:
@@ -64,13 +68,23 @@ def show_home_page() -> None:
             ui.notify("Please enter a task title.")
             return
 
+        deadline = None
+        if deadline_input.value:
+            try:
+                deadline = datetime.strptime(deadline_input.value, "%Y-%m-%d").date()
+            except ValueError:
+                ui.notify("Please use the date format YYYY-MM-DD.")
+                return
+
         add_task(
             task_title_input.value,
             task_description_input.value or "",
+            deadline,
             subject_select.value,
         )
         task_title_input.value = ""
         task_description_input.value = ""
+        deadline_input.value = ""
         subject_select.value = None
         refresh_task_list()
 
