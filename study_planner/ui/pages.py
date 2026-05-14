@@ -8,6 +8,7 @@ from study_planner.ui.controllers import (
     complete_task,
     get_app_title,
     get_subjects,
+    get_task_progress,
     get_tasks,
     get_urgent_tasks,
 )
@@ -28,6 +29,7 @@ def show_home_page() -> None:
     deadline_input = ui.input("Deadline (YYYY-MM-DD)")
     subject_select = ui.select(options={}, label="Subject")
 
+    progress_box = ui.column()
     urgent_task_list = ui.column()
     task_list = ui.column()
 
@@ -46,6 +48,14 @@ def show_home_page() -> None:
             if subject.id is not None
         }
         subject_select.update()
+
+    def refresh_progress_box() -> None:
+        progress_box.clear()
+        with progress_box:
+            progress = get_task_progress()
+            ui.label(f"Total tasks: {progress['total']}")
+            ui.label(f"Completed tasks: {progress['completed']}")
+            ui.label(f"Open tasks: {progress['open']}")
 
     def refresh_urgent_task_list() -> None:
         urgent_task_list.clear()
@@ -108,16 +118,22 @@ def show_home_page() -> None:
         subject_select.value = None
         refresh_task_list()
         refresh_urgent_task_list()
+        refresh_progress_box()
 
     def handle_complete_task(task_id: int) -> None:
         complete_task(task_id)
         refresh_task_list()
         refresh_urgent_task_list()
+        refresh_progress_box()
 
     ui.button("Add subject", on_click=handle_add_subject)
 
     refresh_subject_list()
     refresh_subject_options()
+
+    ui.separator()
+    ui.label("Progress")
+    refresh_progress_box()
 
     ui.separator()
     ui.label("Urgent Tasks")
