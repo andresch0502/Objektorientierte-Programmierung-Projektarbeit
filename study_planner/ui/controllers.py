@@ -14,3 +14,8 @@ def get_app_title() -> str:
 def get_subjects() -> list[Subject]:
     with database.session_scope() as session:
         return subject_service.get_all_subjects(session)
+
+
+def add_subject(name: str, description: str = "") -> Subject:
+    with database.session_scope() as session:
+        return subject_service.create_subject(session, name, description)
