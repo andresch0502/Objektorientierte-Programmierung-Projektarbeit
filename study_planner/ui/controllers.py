@@ -1,3 +1,5 @@
+from datetime import date
+
 from study_planner.data_access.db import Database
 from study_planner.domain.models import Subject, Task
 from study_planner.services.subject_service import SubjectService
@@ -28,6 +30,11 @@ def get_tasks() -> list[Task]:
         return task_service.get_all_tasks(session)
 
 
-def add_task(title: str, description: str = "", subject_id: int | None = None) -> Task:
+def add_task(
+    title: str,
+    description: str = "",
+    deadline: date | None = None,
+    subject_id: int | None = None,
+) -> Task:
     with database.session_scope() as session:
-        return task_service.create_task(session, title, description, subject_id)
+        return task_service.create_task(session, title, description, deadline, subject_id)
