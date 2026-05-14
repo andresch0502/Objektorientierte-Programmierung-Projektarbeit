@@ -2,7 +2,7 @@ from datetime import date
 
 from sqlmodel import Session, select
 
-from study_planner.domain.models import Task
+from study_planner.domain.models import Subject, Task
 
 
 class TaskService:
@@ -29,6 +29,31 @@ class TaskService:
             "total": total,
             "completed": completed,
             "open": open_tasks,
+        }
+
+    def get_tasks_per_subject(self, session: Session) -> list[dict[str, int | str]]:
+        subjects = list(session.exec(select(Subject)))
+        tasks = self.get_all_tasks(session)
+
+        result: list[dict[str, int | str]] = []
+        for subject in subjects:
+            if subject.id is None:
+                continue
+
+            count = len([task for task in tasks if task.subject_id == subject.id])
+            result.append({
+                "subject": subject.name,
+                "count": count,
+            })
+
+        return result
+
+    def get_priority_distribution(self, session: Session) -> dict[str, int]:
+        tasks = self.get_all_tasks(session)
+        return {
+            "high": len([task for task in tasks if task.priority == "high"]),
+            "medium": len([task for task in tasks if task.priority == "medium"]),
+            "low": len([task for task in tasks if task.priority == "low"]),
         }
 
     def create_task(
