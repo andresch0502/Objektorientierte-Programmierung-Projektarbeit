@@ -62,6 +62,11 @@ def get_study_sessions() -> list[StudySession]:
         return study_session_service.get_all_sessions(session)
 
 
+def get_study_statistics() -> dict[str, int]:
+    with database.session_scope() as session:
+        return study_session_service.get_study_statistics(session)
+
+
 def add_study_session(
     session_date: date,
     duration_minutes: int,
