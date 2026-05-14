@@ -30,7 +30,7 @@ class Database:
 
     @contextmanager
     def session_scope(self) -> Iterator[Session]:
-        session = Session(self._engine)
+        session = Session(self._engine, expire_on_commit=False)
         try:
             yield session
             session.commit()
