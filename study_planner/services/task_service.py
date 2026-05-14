@@ -35,14 +35,14 @@ class TaskService:
         self,
         session: Session,
         title: str,
-        description: str = "",
         deadline: date | None = None,
+        notes: str = "",
         subject_id: int | None = None,
     ) -> Task:
         task = Task(
             title=title,
-            description=description,
             deadline=deadline,
+            notes=notes,
             subject_id=subject_id,
         )
         session.add(task)
