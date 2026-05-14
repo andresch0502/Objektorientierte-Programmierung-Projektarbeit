@@ -8,8 +8,8 @@ class SubjectService:
         statement = select(Subject)
         return list(session.exec(statement))
 
-    def create_subject(self, session: Session, name: str, description: str = "") -> Subject:
-        subject = Subject(name=name, description=description)
+    def create_subject(self, session: Session, name: str) -> Subject:
+        subject = Subject(name=name)
         session.add(subject)
         session.commit()
         session.refresh(subject)
