@@ -45,6 +45,16 @@ def get_task_progress() -> dict[str, int]:
         return task_service.get_task_progress(session)
 
 
+def get_tasks_per_subject() -> list[dict[str, int | str]]:
+    with database.session_scope() as session:
+        return task_service.get_tasks_per_subject(session)
+
+
+def get_priority_distribution() -> dict[str, int]:
+    with database.session_scope() as session:
+        return task_service.get_priority_distribution(session)
+
+
 def add_task(
     title: str,
     deadline: date | None = None,
