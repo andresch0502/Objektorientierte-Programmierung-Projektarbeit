@@ -28,3 +28,14 @@ class TaskService:
         session.commit()
         session.refresh(task)
         return task
+
+    def complete_task(self, session: Session, task_id: int) -> Task | None:
+        task = session.get(Task, task_id)
+        if task is None:
+            return None
+
+        task.is_completed = True
+        session.add(task)
+        session.commit()
+        session.refresh(task)
+        return task
