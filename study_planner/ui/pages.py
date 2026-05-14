@@ -7,9 +7,11 @@ from study_planner.ui.controllers import (
     add_task,
     complete_task,
     get_app_title,
+    get_priority_distribution,
     get_subjects,
     get_task_progress,
     get_tasks,
+    get_tasks_per_subject,
     get_urgent_tasks,
     remove_subject,
 )
@@ -226,24 +228,19 @@ def show_home_page() -> None:
                                     "Complete",
                                     on_click=lambda task_id=task.id: handle_complete_task(task_id),
                                 )
-
-        def refresh_statistics_box() -> None:
+                def refresh_statistics_box() -> None:
             statistics_box.clear()
             with statistics_box:
                 section_title("Statistics")
 
                 tasks = get_tasks()
                 subjects = get_subjects()
+                tasks_per_subject = get_tasks_per_subject()
+                priority_distribution = get_priority_distribution()
 
                 if not tasks and not subjects:
                     ui.label("No statistics available yet.").classes("text-gray-500")
                     return
-
-                subject_map = {
-                    subject.id: subject
-                    for subject in subjects
-                    if subject.id is not None
-                }
 
                 with ui.row().classes("w-full"):
                     with ui.card().style("flex: 1;"):
@@ -259,7 +256,44 @@ def show_home_page() -> None:
                         ui.label(str(sum(task.estimated_minutes for task in tasks))).classes("text-2xl font-bold")
 
                 ui.separator()
-                ui.label("Tasks per Subject").classes("text-lg font-semibold")
+
+                with ui.row().classes("w-full").style("gap: 20px; flex-wrap: wrap;"):
+                    with ui.card().style("flex: 1; min-width: 320px;"):
+                        ui.label("Tasks per Subject").classes("text-lg font-semibold")
+                        ui.echart({
+                            "xAxis": {
+                                "type": "category",
+                                "data": [item["subject"] for item in tasks_per_subject],
+                            },
+                            "yAxis": {"type": "value"},
+                            "series": [
+                                {
+                                    "type": "bar",
+                                    "data": [item["count"] for item in tasks_per_subject],
+                                }
+                            ],
+                            "tooltip": {},
+                        }).style("height: 350px; width: 100%;")
+
+                    with ui.card().style("flex: 1; min-width: 320px;"):
+                        ui.label("Priority Distribution").classes("text-lg font-semibold")
+                        ui.echart({
+                            "tooltip": {"trigger": "item"},
+                            "series": [
+                                {
+                                    "type": "pie",
+                                    "radius": "65%",
+                                    "data": [
+                                        {"value": priority_distribution["high"], "name": "High"},
+                                        {"value": priority_distribution["medium"], "name": "Medium"},
+                                        {"value": priority_distribution["low"], "name": "Low"},
+                                    ],
+                                }
+                            ],
+                        }).style("height: 350px; width: 100%;")
+
+                ui.separator()
+                ui.label("Tasks per Subject (Detail View)").classes("text-lg font-semibold")
 
                 if not subjects:
                     ui.label("No subjects available.").classes("text-gray-500")
@@ -276,26 +310,6 @@ def show_home_page() -> None:
                             ui.label(
                                 f"Planned minutes: {sum(task.estimated_minutes for task in subject_tasks)}"
                             ).classes("text-sm text-gray-600")
-
-                ui.separator()
-                ui.label("Priority Distribution").classes("text-lg font-semibold")
-
-                high_count = len([task for task in tasks if task.priority == "high"])
-                medium_count = len([task for task in tasks if task.priority == "medium"])
-                low_count = len([task for task in tasks if task.priority == "low"])
-
-                with ui.row().classes("w-full"):
-                    with ui.card().style("flex: 1;"):
-                        ui.label("High").classes("text-sm text-gray-500")
-                        ui.label(str(high_count)).classes("text-2xl font-bold")
-
-                    with ui.card().style("flex: 1;"):
-                        ui.label("Medium").classes("text-sm text-gray-500")
-                        ui.label(str(medium_count)).classes("text-2xl font-bold")
-
-                    with ui.card().style("flex: 1;"):
-                        ui.label("Low").classes("text-sm text-gray-500")
-                        ui.label(str(low_count)).classes("text-2xl font-bold")
 
         def refresh_dashboard() -> None:
             refresh_progress_box()
