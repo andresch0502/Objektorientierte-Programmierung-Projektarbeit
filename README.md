@@ -38,3 +38,61 @@ The application allows users to:
 - view a simple study statistics overview
 
 ---
+## 📖 User Stories
+
+### 1. Login User
+**As a user, I want to log in so that I can access my personal dashboard and study data.**
+
+- **Inputs:** email (`str`), password (`str`)  
+- **Outputs:** dashboard (`Dashboard`)
+
+---
+
+### 2. View Dashboard
+**As a user, I want to see my dashboard in the browser app so that I can get an overview of my tasks, deadlines, and study progress.**
+
+- **Inputs:** none  
+- **Outputs:** open tasks (`list[Task]`), upcoming deadlines (`list[date]`), planned study sessions (`list[StudySession]`), progress overview (`dict[str, float]`)
+
+---
+
+### 3. Manage Subjects / Modules
+**As a user, I want to create and manage subjects or modules so that I can organize my studies.**
+
+- **Inputs:** subject name (`str`), description (`str`), color (`str`), exam date (`date`), optional lecturer (`str | None`), action (`str`) = `create | edit | delete` 
+- **Outputs:** created or updated subject list (`list[Subject]`)
+  
+---
+
+### 4. Manage Tasks
+**As a user, I want to create and manage tasks for a subject so that I can organize assignments and deadlines.**
+
+- **Inputs:** title (`str`), description (`str`), subject Name (`str`), deadline (`date`), priority (`int`), status (`str`) = `open | in_progress | done`, action (`str`) = `create | edit | delete`
+- **Outputs:** created or updated task list (`list[Task]`)
+
+---
+
+### 5. View User Data / System Overview (admin)
+**As an admin, I want to view user and system data so that I can monitor and manage the application.**
+
+- **Inputs:** none or selected user (`int | None`)
+- **Outputs:** user list (`list[User]`), subjects (`list[Subject]`), tasks (`list[Task]`), system overview (`dict[str, int]`)
+
+---
+## 🧩 Use Cases
+
+<img width="1404" height="1120" alt="image" src="https://github.com/user-attachments/assets/80f09e31-75a7-4c10-b508-19302cdae488" />
+
+
+### Main Use Cases
+- Login (User)  
+- View Dashboard (User)  
+- Manage Subject / Modules (User)  
+- Manage Tasks (User)  
+- View User Data / System Overview (Admin)  
+
+### Actors
+- User  
+- Admin  
+
+---
