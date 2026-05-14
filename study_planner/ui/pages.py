@@ -5,6 +5,7 @@ from nicegui import ui
 from study_planner.ui.controllers import (
     add_subject,
     add_task,
+    complete_task,
     get_app_title,
     get_subjects,
     get_tasks,
@@ -49,8 +50,16 @@ def show_home_page() -> None:
         with task_list:
             tasks = get_tasks()
             for task in tasks:
-                deadline_text = f" (Deadline: {task.deadline})" if task.deadline else ""
-                ui.label(f"{task.title}{deadline_text}")
+                with ui.row():
+                    deadline_text = f" (Deadline: {task.deadline})" if task.deadline else ""
+                    status_text = "✅ " if task.is_completed else ""
+                    ui.label(f"{status_text}{task.title}{deadline_text}")
+
+                    if not task.is_completed and task.id is not None:
+                        ui.button(
+                            "Complete",
+                            on_click=lambda task_id=task.id: handle_complete_task(task_id),
+                        )
 
     def handle_add_subject() -> None:
         if not name_input.value:
@@ -86,6 +95,10 @@ def show_home_page() -> None:
         task_description_input.value = ""
         deadline_input.value = ""
         subject_select.value = None
+        refresh_task_list()
+
+    def handle_complete_task(task_id: int) -> None:
+        complete_task(task_id)
         refresh_task_list()
 
     ui.button("Add subject", on_click=handle_add_subject)
