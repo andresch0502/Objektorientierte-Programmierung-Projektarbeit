@@ -9,6 +9,7 @@ from study_planner.ui.controllers import (
     get_app_title,
     get_subjects,
     get_tasks,
+    get_urgent_tasks,
 )
 
 
@@ -27,6 +28,7 @@ def show_home_page() -> None:
     deadline_input = ui.input("Deadline (YYYY-MM-DD)")
     subject_select = ui.select(options={}, label="Subject")
 
+    urgent_task_list = ui.column()
     task_list = ui.column()
 
     def refresh_subject_list() -> None:
@@ -44,6 +46,15 @@ def show_home_page() -> None:
             if subject.id is not None
         }
         subject_select.update()
+
+    def refresh_urgent_task_list() -> None:
+        urgent_task_list.clear()
+        with urgent_task_list:
+            urgent_tasks = get_urgent_tasks()
+            if not urgent_tasks:
+                ui.label("No urgent tasks at the moment.")
+            for task in urgent_tasks:
+                ui.label(f"{task.title} (Deadline: {task.deadline})")
 
     def refresh_task_list() -> None:
         task_list.clear()
@@ -96,15 +107,21 @@ def show_home_page() -> None:
         deadline_input.value = ""
         subject_select.value = None
         refresh_task_list()
+        refresh_urgent_task_list()
 
     def handle_complete_task(task_id: int) -> None:
         complete_task(task_id)
         refresh_task_list()
+        refresh_urgent_task_list()
 
     ui.button("Add subject", on_click=handle_add_subject)
 
     refresh_subject_list()
     refresh_subject_options()
+
+    ui.separator()
+    ui.label("Urgent Tasks")
+    refresh_urgent_task_list()
 
     ui.separator()
     ui.label("Tasks")
