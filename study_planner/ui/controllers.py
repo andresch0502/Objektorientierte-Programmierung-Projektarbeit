@@ -22,9 +22,9 @@ def get_subjects() -> list[Subject]:
         return subject_service.get_all_subjects(session)
 
 
-def add_subject(name: str, description: str = "") -> Subject:
+def add_subject(name: str) -> Subject:
     with database.session_scope() as session:
-        return subject_service.create_subject(session, name, description)
+        return subject_service.create_subject(session, name)
 
 
 def get_tasks() -> list[Task]:
@@ -44,12 +44,12 @@ def get_task_progress() -> dict[str, int]:
 
 def add_task(
     title: str,
-    description: str = "",
     deadline: date | None = None,
+    notes: str = "",
     subject_id: int | None = None,
 ) -> Task:
     with database.session_scope() as session:
-        return task_service.create_task(session, title, description, deadline, subject_id)
+        return task_service.create_task(session, title, deadline, notes, subject_id)
 
 
 def complete_task(task_id: int) -> Task | None:
