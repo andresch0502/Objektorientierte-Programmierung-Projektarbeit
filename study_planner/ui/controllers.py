@@ -30,6 +30,11 @@ def get_tasks() -> list[Task]:
         return task_service.get_all_tasks(session)
 
 
+def get_urgent_tasks() -> list[Task]:
+    with database.session_scope() as session:
+        return task_service.get_urgent_tasks(session)
+
+
 def add_task(
     title: str,
     description: str = "",
