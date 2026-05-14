@@ -35,6 +35,11 @@ def get_urgent_tasks() -> list[Task]:
         return task_service.get_urgent_tasks(session)
 
 
+def get_task_progress() -> dict[str, int]:
+    with database.session_scope() as session:
+        return task_service.get_task_progress(session)
+
+
 def add_task(
     title: str,
     description: str = "",
