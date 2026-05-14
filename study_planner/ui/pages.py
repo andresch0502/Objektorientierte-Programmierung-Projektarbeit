@@ -9,6 +9,7 @@ from study_planner.ui.controllers import (
     complete_task,
     get_app_title,
     get_study_sessions,
+    get_study_statistics,
     get_subjects,
     get_task_progress,
     get_tasks,
@@ -40,6 +41,7 @@ def show_home_page() -> None:
     urgent_task_list = ui.column()
     task_list = ui.column()
     session_list = ui.column()
+    study_statistics_box = ui.column()
 
     def refresh_subject_list() -> None:
         subject_list.clear()
@@ -104,6 +106,13 @@ def show_home_page() -> None:
                     f"{study_session.session_date} - {study_session.duration_minutes} min"
                     f" - {study_session.notes}"
                 )
+
+    def refresh_study_statistics_box() -> None:
+        study_statistics_box.clear()
+        with study_statistics_box:
+            statistics = get_study_statistics()
+            ui.label(f"Total study sessions: {statistics['total_sessions']}")
+            ui.label(f"Total study minutes: {statistics['total_minutes']}")
 
     def handle_add_subject() -> None:
         if not name_input.value:
@@ -184,6 +193,7 @@ def show_home_page() -> None:
         session_notes_input.value = ""
         session_subject_select.value = None
         refresh_session_list()
+        refresh_study_statistics_box()
 
     ui.button("Add subject", on_click=handle_add_subject)
 
@@ -207,3 +217,7 @@ def show_home_page() -> None:
     ui.label("Study Sessions")
     ui.button("Add study session", on_click=handle_add_study_session)
     refresh_session_list()
+
+    ui.separator()
+    ui.label("Study Statistics")
+    refresh_study_statistics_box()
