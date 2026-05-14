@@ -1,3 +1,5 @@
+from datetime import date
+
 from sqlmodel import Session, select
 
 from study_planner.domain.models import Task
@@ -13,11 +15,13 @@ class TaskService:
         session: Session,
         title: str,
         description: str = "",
+        deadline: date | None = None,
         subject_id: int | None = None,
     ) -> Task:
         task = Task(
             title=title,
             description=description,
+            deadline=deadline,
             subject_id=subject_id,
         )
         session.add(task)
