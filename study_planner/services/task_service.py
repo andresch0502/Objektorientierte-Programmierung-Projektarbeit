@@ -10,6 +10,11 @@ class TaskService:
         statement = select(Task)
         return list(session.exec(statement))
 
+    def get_urgent_tasks(self, session: Session) -> list[Task]:
+        tasks = self.get_all_tasks(session)
+        open_tasks = [task for task in tasks if not task.is_completed and task.deadline is not None]
+        return sorted(open_tasks, key=lambda task: task.deadline)[:3]
+
     def create_task(
         self,
         session: Session,
