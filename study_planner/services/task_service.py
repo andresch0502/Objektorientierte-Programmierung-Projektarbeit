@@ -15,6 +15,17 @@ class TaskService:
         open_tasks = [task for task in tasks if not task.is_completed and task.deadline is not None]
         return sorted(open_tasks, key=lambda task: task.deadline)[:3]
 
+    def get_task_progress(self, session: Session) -> dict[str, int]:
+        tasks = self.get_all_tasks(session)
+        total = len(tasks)
+        completed = len([task for task in tasks if task.is_completed])
+        open_tasks = total - completed
+        return {
+            "total": total,
+            "completed": completed,
+            "open": open_tasks,
+        }
+
     def create_task(
         self,
         session: Session,
