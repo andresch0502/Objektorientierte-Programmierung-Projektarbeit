@@ -1,7 +1,8 @@
 from datetime import date
 
 from study_planner.data_access.db import Database
-from study_planner.domain.models import Subject, Task
+from study_planner.domain.models import StudySession, Subject, Task
+from study_planner.services.study_session_service import StudySessionService
 from study_planner.services.subject_service import SubjectService
 from study_planner.services.task_service import TaskService
 
@@ -9,6 +10,7 @@ from study_planner.services.task_service import TaskService
 database = Database()
 subject_service = SubjectService()
 task_service = TaskService()
+study_session_service = StudySessionService()
 
 
 def get_app_title() -> str:
@@ -53,3 +55,24 @@ def add_task(
 def complete_task(task_id: int) -> Task | None:
     with database.session_scope() as session:
         return task_service.complete_task(session, task_id)
+
+
+def get_study_sessions() -> list[StudySession]:
+    with database.session_scope() as session:
+        return study_session_service.get_all_sessions(session)
+
+
+def add_study_session(
+    session_date: date,
+    duration_minutes: int,
+    notes: str = "",
+    subject_id: int | None = None,
+) -> StudySession:
+    with database.session_scope() as session:
+        return study_session_service.create_session(
+            session,
+            session_date,
+            duration_minutes,
+            notes,
+            subject_id,
+        )
