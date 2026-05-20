@@ -6,6 +6,7 @@ from study_planner.ui.controllers import (
     add_subject,
     add_task,
     complete_task,
+    edit_subject,
     get_app_title,
     get_priority_distribution,
     get_subjects,
@@ -23,6 +24,8 @@ def show_home_page() -> None:
     with ui.column().style("max-width: 1200px; margin: 0 auto; padding: 24px; width: 100%; gap: 20px;"):
         ui.label(get_app_title()).classes("text-3xl font-bold")
         ui.label("Plan your subjects, tasks, priorities, and weekly workload.").classes("text-gray-600")
+
+        edit_subject_state = {"id": None}
 
         def section_title(title: str, subtitle: str = "") -> None:
             ui.label(title).classes("text-xl font-semibold")
@@ -46,6 +49,19 @@ def show_home_page() -> None:
                     section_title("Add New Subject")
                     subject_name_input = ui.input("Subject name").classes("w-full")
                     subject_ects_input = ui.input("ECTS").classes("w-full")
+                    subject_semester_select = ui.select(
+                        options=[
+                            "Semester 1",
+                            "Semester 2",
+                            "Semester 3",
+                            "Semester 4",
+                            "Semester 5",
+                            "Semester 6",
+                        ],
+                        label="Semester",
+                        value="Semester 1",
+                    ).classes("w-full")
+                    subject_moodle_link_input = ui.input("Moodle link (optional)").classes("w-full")
                     add_subject_button = ui.button("Add subject").classes("w-full")
 
                 with ui.card().classes("w-full"):
@@ -79,6 +95,28 @@ def show_home_page() -> None:
             with ui.tab_panel(statistics_tab):
                 statistics_box = ui.column().classes("w-full")
 
+        with ui.dialog() as edit_subject_dialog, ui.card().classes("w-full"):
+            ui.label("Edit Subject").classes("text-xl font-semibold")
+            edit_subject_name_input = ui.input("Subject name").classes("w-full")
+            edit_subject_ects_input = ui.input("ECTS").classes("w-full")
+            edit_subject_semester_select = ui.select(
+                options=[
+                    "Semester 1",
+                    "Semester 2",
+                    "Semester 3",
+                    "Semester 4",
+                    "Semester 5",
+                    "Semester 6",
+                ],
+                label="Semester",
+                value="Semester 1",
+            ).classes("w-full")
+            edit_subject_moodle_link_input = ui.input("Moodle link (optional)").classes("w-full")
+            edit_subject_completed_checkbox = ui.checkbox("Module completed")
+            with ui.row().classes("w-full justify-end"):
+                cancel_edit_subject_button = ui.button("Cancel")
+                save_edit_subject_button = ui.button("Save changes")
+
         def get_subject_name_map() -> dict[int, str]:
             return {
                 subject.id: subject.name
@@ -90,6 +128,21 @@ def show_home_page() -> None:
             options = get_subject_name_map()
             task_subject_select.options = options
             task_subject_select.update()
+
+        def open_edit_subject_dialog(subject_id: int) -> None:
+            subjects = get_subjects()
+            subject = next((item for item in subjects if item.id == subject_id), None)
+            if subject is None:
+                ui.notify("Subject not found.")
+                return
+
+            edit_subject_state["id"] = subject.id
+            edit_subject_name_input.value = subject.name
+            edit_subject_ects_input.value = str(subject.ects)
+            edit_subject_semester_select.value = subject.semester
+            edit_subject_moodle_link_input.value = subject.moodle_link
+            edit_subject_completed_checkbox.value = subject.is_completed
+            edit_subject_dialog.open()
 
         def refresh_subject_list() -> None:
             subject_list.clear()
@@ -105,12 +158,23 @@ def show_home_page() -> None:
                             with ui.column().classes("gap-1"):
                                 ui.label(subject.name).classes("font-medium")
                                 ui.label(f"ECTS: {subject.ects}").classes("text-sm text-gray-600")
+                                ui.label(f"Semester: {subject.semester}").classes("text-sm text-gray-600")
+                                ui.label(
+                                    "Completed" if subject.is_completed else "Not completed"
+                                ).classes("text-sm text-gray-600")
+                                if subject.moodle_link:
+                                    ui.link("Open Moodle", subject.moodle_link, new_tab=True).classes("text-sm")
 
-                            if subject.id is not None:
-                                ui.button(
-                                    "Delete",
-                                    on_click=lambda subject_id=subject.id: handle_remove_subject(subject_id),
-                                ).props("color=negative")
+                            with ui.row().classes("gap-2"):
+                                if subject.id is not None:
+                                    ui.button(
+                                        "Edit",
+                                        on_click=lambda subject_id=subject.id: open_edit_subject_dialog(subject_id),
+                                    )
+                                    ui.button(
+                                        "Delete",
+                                        on_click=lambda subject_id=subject.id: handle_remove_subject(subject_id),
+                                    ).props("color=negative")
 
         def refresh_progress_box() -> None:
             progress_box.clear()
@@ -228,6 +292,7 @@ def show_home_page() -> None:
                                     "Complete",
                                     on_click=lambda task_id=task.id: handle_complete_task(task_id),
                                 )
+
                 def refresh_statistics_box() -> None:
             statistics_box.clear()
             with statistics_box:
@@ -306,6 +371,10 @@ def show_home_page() -> None:
                         with ui.card().classes("w-full"):
                             ui.label(subject.name).classes("font-medium")
                             ui.label(f"ECTS: {subject.ects}").classes("text-sm text-gray-600")
+                            ui.label(f"Semester: {subject.semester}").classes("text-sm text-gray-600")
+                            ui.label(
+                                "Completed" if subject.is_completed else "Not completed"
+                            ).classes("text-sm text-gray-600")
                             ui.label(f"Tasks: {len(subject_tasks)}").classes("text-sm text-gray-600")
                             ui.label(
                                 f"Planned minutes: {sum(task.estimated_minutes for task in subject_tasks)}"
@@ -330,14 +399,54 @@ def show_home_page() -> None:
                 ui.notify("Please enter a valid ECTS number.")
                 return
 
-            add_subject(subject_name_input.value, ects)
+            add_subject(
+                subject_name_input.value,
+                ects,
+                subject_semester_select.value or "Semester 1",
+                subject_moodle_link_input.value or "",
+            )
             subject_name_input.value = ""
             subject_ects_input.value = ""
+            subject_semester_select.value = "Semester 1"
+            subject_moodle_link_input.value = ""
             refresh_subject_list()
             refresh_subject_options()
             refresh_dashboard()
             refresh_statistics_box()
             ui.notify("Subject added.")
+
+        def handle_save_edited_subject() -> None:
+            if edit_subject_state["id"] is None:
+                ui.notify("No subject selected.")
+                return
+
+            if not edit_subject_name_input.value:
+                ui.notify("Please enter a subject name.")
+                return
+
+            try:
+                ects = int(edit_subject_ects_input.value or 0)
+                if ects < 0:
+                    ui.notify("ECTS must be 0 or greater.")
+                    return
+            except ValueError:
+                ui.notify("Please enter a valid ECTS number.")
+                return
+
+            edit_subject(
+                edit_subject_state["id"],
+                edit_subject_name_input.value,
+                ects,
+                edit_subject_semester_select.value or "Semester 1",
+                edit_subject_moodle_link_input.value or "",
+                bool(edit_subject_completed_checkbox.value),
+            )
+            edit_subject_dialog.close()
+            refresh_subject_list()
+            refresh_subject_options()
+            refresh_dashboard()
+            refresh_statistics_box()
+            ui.notify("Subject updated.")
 
         def handle_remove_subject(subject_id: int) -> None:
             tasks = get_tasks()
@@ -418,6 +527,8 @@ def show_home_page() -> None:
 
         add_subject_button.on("click", lambda: handle_add_subject())
         add_task_button.on("click", lambda: handle_add_task())
+        cancel_edit_subject_button.on("click", lambda: edit_subject_dialog.close())
+        save_edit_subject_button.on("click", lambda: handle_save_edited_subject())
 
         refresh_subject_options()
         refresh_subject_list()
