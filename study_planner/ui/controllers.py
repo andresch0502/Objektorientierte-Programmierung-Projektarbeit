@@ -62,6 +62,16 @@ def get_credit_summary(semester: str | None = None) -> dict[str, int]:
         return subject_service.get_credit_summary(session, semester)
 
 
+def get_semester_statistics() -> list[dict[str, int | str]]:
+    with database.session_scope() as session:
+        return subject_service.get_semester_statistics(session)
+
+
+def get_completed_subjects(semester: str | None = None) -> list[Subject]:
+    with database.session_scope() as session:
+        return subject_service.get_completed_subjects(session, semester)
+
+
 def get_tasks() -> list[Task]:
     with database.session_scope() as session:
         return task_service.get_all_tasks(session)
