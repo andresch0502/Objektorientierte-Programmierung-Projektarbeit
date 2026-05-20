@@ -2,6 +2,7 @@ from datetime import date
 
 from study_planner.data_access.db import Database
 from study_planner.domain.models import Subject, Task
+from study_planner.services.export_service import ExportService
 from study_planner.services.subject_service import SubjectService
 from study_planner.services.task_service import TaskService
 
@@ -9,6 +10,7 @@ from study_planner.services.task_service import TaskService
 database = Database()
 subject_service = SubjectService()
 task_service = TaskService()
+export_service = ExportService()
 
 
 def get_app_title() -> str:
@@ -83,6 +85,16 @@ def get_tasks_per_subject() -> list[dict[str, int | str]]:
 def get_priority_distribution() -> dict[str, int]:
     with database.session_scope() as session:
         return task_service.get_priority_distribution(session)
+
+
+def export_subjects_csv() -> str:
+    subjects = get_subjects()
+    return export_service.export_subjects_to_csv(subjects, "exports/subjects_export.csv")
+
+
+def export_tasks_csv() -> str:
+    tasks = get_tasks()
+    return export_service.export_tasks_to_csv(tasks, "exports/tasks_export.csv")
 
 
 def add_task(
