@@ -15,10 +15,8 @@ from study_planner.ui.controllers import (
     get_priority_distribution,
     get_semester_statistics,
     get_subjects,
-    get_task_progress,
     get_tasks,
     get_tasks_per_subject,
-    get_urgent_tasks,
     remove_subject,
 )
 
@@ -31,6 +29,16 @@ def show_home_page() -> None:
         ui.label("Plan your subjects, tasks, priorities, and weekly workload.").classes("text-gray-600")
 
         edit_subject_state = {"id": None}
+
+        semester_options = [
+            "All semesters",
+            "Semester 1",
+            "Semester 2",
+            "Semester 3",
+            "Semester 4",
+            "Semester 5",
+            "Semester 6",
+        ]
 
         def section_title(title: str, subtitle: str = "") -> None:
             ui.label(title).classes("text-xl font-semibold")
@@ -46,15 +54,7 @@ def show_home_page() -> None:
         with ui.tab_panels(tabs, value=dashboard_tab).classes("w-full"):
             with ui.tab_panel(dashboard_tab):
                 dashboard_semester_select = ui.select(
-                    options=[
-                        "All semesters",
-                        "Semester 1",
-                        "Semester 2",
-                        "Semester 3",
-                        "Semester 4",
-                        "Semester 5",
-                        "Semester 6",
-                    ],
+                    options=semester_options,
                     label="Semester filter",
                     value="All semesters",
                     on_change=lambda _: refresh_dashboard(),
@@ -70,14 +70,7 @@ def show_home_page() -> None:
                     subject_name_input = ui.input("Subject name").classes("w-full")
                     subject_ects_input = ui.input("ECTS").classes("w-full")
                     subject_semester_select = ui.select(
-                        options=[
-                            "Semester 1",
-                            "Semester 2",
-                            "Semester 3",
-                            "Semester 4",
-                            "Semester 5",
-                            "Semester 6",
-                        ],
+                        options=semester_options[1:],
                         label="Semester",
                         value="Semester 1",
                     ).classes("w-full")
@@ -159,14 +152,7 @@ def show_home_page() -> None:
             edit_subject_name_input = ui.input("Subject name").classes("w-full")
             edit_subject_ects_input = ui.input("ECTS").classes("w-full")
             edit_subject_semester_select = ui.select(
-                options=[
-                    "Semester 1",
-                    "Semester 2",
-                    "Semester 3",
-                    "Semester 4",
-                    "Semester 5",
-                    "Semester 6",
-                ],
+                options=semester_options[1:],
                 label="Semester",
                 value="Semester 1",
             ).classes("w-full")
@@ -182,6 +168,21 @@ def show_home_page() -> None:
                 for subject in get_subjects()
                 if subject.id is not None
             }
+
+        def get_dashboard_subject_ids() -> set[int]:
+            subjects = get_subjects()
+            selected_semester = dashboard_semester_select.value or "All semesters"
+            if selected_semester == "All semesters":
+                return {subject.id for subject in subjects if subject.id is not None}
+            return {
+                subject.id
+                for subject in subjects
+                if subject.id is not None and subject.semester == selected_semester
+            }
+
+        def get_filtered_dashboard_tasks():
+            subject_ids = get_dashboard_subject_ids()
+            return [task for task in get_tasks() if task.subject_id in subject_ids]
 
         def build_optional_date(
             day_value: str | None,
@@ -279,33 +280,40 @@ def show_home_page() -> None:
         def refresh_progress_box() -> None:
             progress_box.clear()
             with progress_box:
-                section_title("📈 Progress")
-                progress = get_task_progress()
-                subjects = get_subjects()
+                selected_semester = dashboard_semester_select.value or "All semesters"
+                section_title("📈 Progress", f"Task status for: {selected_semester}")
+                tasks = get_filtered_dashboard_tasks()
+
+                total = len(tasks)
+                completed = len([task for task in tasks if task.is_completed])
+                open_tasks = total - completed
 
                 with ui.row().classes("w-full"):
                     with ui.card().style("flex: 1;"):
-                        ui.label("Subjects").classes("text-sm text-gray-500")
-                        ui.label(str(len(subjects))).classes("text-2xl font-bold")
-
-                    with ui.card().style("flex: 1;"):
-                        ui.label("Total tasks").classes("text-sm text-gray-500")
-                        ui.label(str(progress["total"])).classes("text-2xl font-bold")
+                        ui.label("Filtered tasks").classes("text-sm text-gray-500")
+                        ui.label(str(total)).classes("text-2xl font-bold")
 
                     with ui.card().style("flex: 1;"):
                         ui.label("Completed").classes("text-sm text-gray-500")
-                        ui.label(str(progress["completed"])).classes("text-2xl font-bold")
+                        ui.label(str(completed)).classes("text-2xl font-bold")
 
                     with ui.card().style("flex: 1;"):
                         ui.label("Open").classes("text-sm text-gray-500")
-                        ui.label(str(progress["open"])).classes("text-2xl font-bold")
+                        ui.label(str(open_tasks)).classes("text-2xl font-bold")
 
         def refresh_urgent_task_list() -> None:
             urgent_task_list.clear()
             with urgent_task_list:
-                section_title("⚠️ Urgent Tasks")
-                urgent_tasks = get_urgent_tasks()
+                selected_semester = dashboard_semester_select.value or "All semesters"
+                section_title("⚠️ Urgent Tasks", f"Urgent tasks for: {selected_semester}")
                 subject_names = get_subject_name_map()
+
+                urgent_tasks = [
+                    task
+                    for task in get_filtered_dashboard_tasks()
+                    if not task.is_completed and task.deadline is not None
+                ]
+                urgent_tasks = sorted(urgent_tasks, key=lambda task: task.deadline)[:3]
 
                 if not urgent_tasks:
                     ui.label("No urgent tasks at the moment.").classes("text-gray-500")
@@ -327,8 +335,9 @@ def show_home_page() -> None:
         def refresh_week_overview() -> None:
             week_overview_box.clear()
             with week_overview_box:
-                section_title("🗓️ Weekly Overview", "Tasks planned for the next 7 days")
-                tasks = get_tasks()
+                selected_semester = dashboard_semester_select.value or "All semesters"
+                section_title("🗓️ Weekly Overview", f"Tasks planned for the next 7 days ({selected_semester})")
+                tasks = get_filtered_dashboard_tasks()
                 subject_names = get_subject_name_map()
                 start_day = date.today()
 
@@ -596,15 +605,15 @@ def show_home_page() -> None:
             refresh_statistics_box()
             ui.notify("Subject updated.")
 
-        def handle_remove_subject(root: str) -> None:
+        def handle_remove_subject(subject_id: int) -> None:
             tasks = get_tasks()
-            linked_tasks = [task for task in tasks if task.subject_id == root]
+            linked_tasks = [task for task in tasks if task.subject_id == subject_id]
 
             if linked_tasks:
                 ui.notify("You cannot delete a subject that still has tasks.")
                 return
 
-            remove_subject(root)
+            remove_subject(subject_id)
             refresh_subject_list()
             refresh_subject_options()
             refresh_dashboard()
