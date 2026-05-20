@@ -70,21 +70,55 @@ def show_home_page() -> None:
 
             with ui.tab_panel(tasks_tab):
                 with ui.card().classes("w-full"):
-                    section_title("Add Task", "Select a subject and add planning details.")
-                    task_subject_select = ui.select(options={}, label="Subject").classes("w-full")
-                    task_title_input = ui.input("Task title").classes("w-full")
-                    deadline_input = ui.input("Deadline (YYYY-MM-DD)").classes("w-full")
-                    planned_date_input = ui.input("Planned date (YYYY-MM-DD)").classes("w-full")
-                    estimated_minutes_input = ui.input("Estimated minutes").classes("w-full")
+                    section_title(
+                        "Add Task",
+                        "Mandatory: Subject, Task title, Priority. Optional: deadline, planned date, estimated minutes, notes.",
+                    )
+
+                    task_subject_select = ui.select(options={}, label="Subject *").classes("w-full")
+                    task_title_input = ui.input("Task title *").classes("w-full")
+
                     priority_select = ui.select(
                         options={
                             "high": "High",
                             "medium": "Medium",
                             "low": "Low",
                         },
-                        label="Priority",
+                        label="Priority *",
                         value="medium",
                     ).classes("w-full")
+
+                    ui.label("Deadline (optional)").classes("text-sm text-gray-600")
+                    with ui.row().classes("w-full"):
+                        deadline_day_select = ui.select(
+                            options=[str(day) for day in range(1, 32)],
+                            label="Day",
+                        ).classes("w-full")
+                        deadline_month_select = ui.select(
+                            options=[str(month) for month in range(1, 13)],
+                            label="Month",
+                        ).classes("w-full")
+                        deadline_year_select = ui.select(
+                            options=[str(year) for year in range(2025, 2036)],
+                            label="Year",
+                        ).classes("w-full")
+
+                    ui.label("Planned date (optional)").classes("text-sm text-gray-600")
+                    with ui.row().classes("w-full"):
+                        planned_day_select = ui.select(
+                            options=[str(day) for day in range(1, 32)],
+                            label="Day",
+                        ).classes("w-full")
+                        planned_month_select = ui.select(
+                            options=[str(month) for month in range(1, 13)],
+                            label="Month",
+                        ).classes("w-full")
+                        planned_year_select = ui.select(
+                            options=[str(year) for year in range(2025, 2036)],
+                            label="Year",
+                        ).classes("w-full")
+
+                    estimated_minutes_input = ui.input("Estimated minutes (optional)").classes("w-full")
                     task_notes_input = ui.textarea("Notes (optional)").classes("w-full")
                     add_task_button = ui.button("Add task").classes("w-full")
 
@@ -123,6 +157,20 @@ def show_home_page() -> None:
                 for subject in get_subjects()
                 if subject.id is not None
             }
+
+        def build_optional_date(day_value: str | None, month_value: str | None, year_value: str | None, label: str) -> date | None:
+            if not day_value and not month_value and not year_value:
+                return None
+
+            if not day_value or not month_value or not year_value:
+                ui.notify(f"Please complete day, month, and year for the {label}.")
+                raise ValueError(label)
+
+            try:
+                return date(int(year_value), int(month_value), int(day_value))
+            except ValueError:
+                ui.notify(f"Please select a valid {label}.")
+                raise
 
         def refresh_subject_options() -> None:
             options = get_subject_name_map()
@@ -472,21 +520,25 @@ def show_home_page() -> None:
                 ui.notify("Please enter a task title.")
                 return
 
-            deadline = None
-            if deadline_input.value:
-                try:
-                    deadline = datetime.strptime(deadline_input.value, "%Y-%m-%d").date()
-                except ValueError:
-                    ui.notify("Please use the date format YYYY-MM-DD for the deadline.")
-                    return
+            try:
+                deadline = build_optional_date(
+                    deadline_day_select.value,
+                    deadline_month_select.value,
+                    deadline_year_select.value,
+                    "deadline",
+                )
+            except ValueError:
+                return
 
-            planned_date = None
-            if planned_date_input.value:
-                try:
-                    planned_date = datetime.strptime(planned_date_input.value, "%Y-%m-%d").date()
-                except ValueError:
-                    ui.notify("Please use the date format YYYY-MM-DD for the planned date.")
-                    return
+            try:
+                planned_date = build_optional_date(
+                    planned_day_select.value,
+                    planned_month_select.value,
+                    planned_year_select.value,
+                    "planned date",
+                )
+            except ValueError:
+                return
 
             try:
                 estimated_minutes = int(estimated_minutes_input.value or 0)
@@ -507,8 +559,12 @@ def show_home_page() -> None:
                 task_subject_select.value,
             )
             task_title_input.value = ""
-            deadline_input.value = ""
-            planned_date_input.value = ""
+            deadline_day_select.value = None
+            deadline_month_select.value = None
+            deadline_year_select.value = None
+            planned_day_select.value = None
+            planned_month_select.value = None
+            planned_year_select.value = None
             estimated_minutes_input.value = ""
             priority_select.value = "medium"
             task_notes_input.value = ""
