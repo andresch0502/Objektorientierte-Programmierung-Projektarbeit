@@ -145,6 +145,15 @@ def show_home_page() -> None:
                     export_subjects_button = ui.button("Export Subjects CSV").classes("w-full")
                     export_tasks_button = ui.button("Export Tasks CSV").classes("w-full")
 
+                with ui.card().classes("w-full"):
+                    section_title("🧮 Statistics Filter")
+                    statistics_semester_select = ui.select(
+                        options=semester_options,
+                        label="Semester filter",
+                        value="All semesters",
+                        on_change=lambda _: refresh_statistics_box(),
+                    ).classes("w-full max-w-xs")
+
                 statistics_box = ui.column().classes("w-full")
 
         with ui.dialog() as edit_subject_dialog, ui.card().classes("w-full"):
@@ -180,9 +189,23 @@ def show_home_page() -> None:
                 if subject.id is not None and subject.semester == selected_semester
             }
 
-        def get_filtered_dashboard_tasks():
+        def get_filtered_dashboard_tasks() -> list:
             subject_ids = get_dashboard_subject_ids()
             return [task for task in get_tasks() if task.subject_id in subject_ids]
+
+        def get_statistics_subjects():
+            selected_semester = statistics_semester_select.value or "All semesters"
+            subjects = get_subjects()
+            if selected_semester == "All semesters":
+                return subjects
+            return [subject for subject in subjects if subject.semester == selected_semester]
+
+        def get_statistics_tasks():
+            selected_semester = statistics_semester_select.value or "All semesters"
+            subjects = get_statistics_subjects()
+            subject_ids = {subject.id for subject in subjects if subject.id is not None}
+            tasks = get_tasks()
+            return [task for task in tasks if task.subject_id in subject_ids]
 
         def build_optional_date(
             day_value: str | None,
@@ -406,14 +429,15 @@ def show_home_page() -> None:
         def refresh_statistics_box() -> None:
             statistics_box.clear()
             with statistics_box:
-                section_title("📊 Statistics")
+                selected_semester = statistics_semester_select.value or "All semesters"
+                section_title("📊 Statistics", f"Showing statistics for: {selected_semester}")
 
-                tasks = get_tasks()
-                subjects = get_subjects()
-                tasks_per_subject = get_tasks_per_subject()
-                priority_distribution = get_priority_distribution()
+                tasks = get_statistics_tasks()
+                subjects = get_statistics_subjects()
+                tasks_per_subject = get_tasks_per_subject(selected_semester)
+                priority_distribution = get_priority_distribution(selected_semester)
                 semester_statistics = get_semester_statistics()
-                completed_subjects = get_completed_subjects()
+                completed_subjects = get_completed_subjects(selected_semester)
 
                 if not tasks and not subjects:
                     ui.label("No statistics available yet.").classes("text-gray-500")
@@ -469,7 +493,7 @@ def show_home_page() -> None:
                             ],
                         }).style("height: 350px; width: 100%;")
 
-                if semester_statistics:
+                if selected_semester == "All semesters" and semester_statistics:
                     ui.separator()
                     ui.label("Semester Credits").classes("text-lg font-semibold")
                     with ui.card().classes("w-full"):
