@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 
 from nicegui import ui
 
@@ -8,6 +8,7 @@ from study_planner.ui.controllers import (
     complete_task,
     edit_subject,
     get_app_title,
+    get_credit_summary,
     get_priority_distribution,
     get_subjects,
     get_task_progress,
@@ -40,6 +41,21 @@ def show_home_page() -> None:
 
         with ui.tab_panels(tabs, value=dashboard_tab).classes("w-full"):
             with ui.tab_panel(dashboard_tab):
+                dashboard_semester_select = ui.select(
+                    options=[
+                        "All semesters",
+                        "Semester 1",
+                        "Semester 2",
+                        "Semester 3",
+                        "Semester 4",
+                        "Semester 5",
+                        "Semester 6",
+                    ],
+                    label="Semester filter",
+                    value="All semesters",
+                    on_change=lambda _: refresh_dashboard(),
+                ).classes("w-full max-w-xs")
+                credit_box = ui.column().classes("w-full")
                 progress_box = ui.column().classes("w-full")
                 urgent_task_list = ui.column().classes("w-full")
                 week_overview_box = ui.column().classes("w-full")
@@ -223,6 +239,26 @@ def show_home_page() -> None:
                                         "Delete",
                                         on_click=lambda subject_id=subject.id: handle_remove_subject(subject_id),
                                     ).props("color=negative")
+
+        def refresh_credit_box() -> None:
+            credit_box.clear()
+            with credit_box:
+                selected_semester = dashboard_semester_select.value or "All semesters"
+                section_title("Credits Overview", f"Showing credits for: {selected_semester}")
+                credits = get_credit_summary(selected_semester)
+
+                with ui.row().classes("w-full"):
+                    with ui.card().style("flex: 1;"):
+                        ui.label("Planned Credits").classes("text-sm text-gray-500")
+                        ui.label(str(credits["planned"])).classes("text-2xl font-bold")
+
+                    with ui.card().style("flex: 1;"):
+                        ui.label("Completed Credits").classes("text-sm text-gray-500")
+                        ui.label(str(credits["completed"])).classes("text-2xl font-bold")
+
+                    with ui.card().style("flex: 1;"):
+                        ui.label("Open Credits").classes("text-sm text-gray-500")
+                        ui.label(str(credits["open"])).classes("text-2xl font-bold")
 
         def refresh_progress_box() -> None:
             progress_box.clear()
@@ -429,6 +465,7 @@ def show_home_page() -> None:
                             ).classes("text-sm text-gray-600")
 
         def refresh_dashboard() -> None:
+            refresh_credit_box()
             refresh_progress_box()
             refresh_urgent_task_list()
             refresh_week_overview()
