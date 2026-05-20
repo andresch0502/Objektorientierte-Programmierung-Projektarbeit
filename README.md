@@ -141,5 +141,84 @@ The application uses **SQLModel** to map domain objects to a SQLite database.
 ### Relationships
 - One `User` → many `Subject`
 - One `Subject` has many `Task`
+  
+---
+
+## ⚙️ Implementation
+
+### Technology
+
+- Python 3.x  
+- NiceGUI  
+- SQLModel / SQLAlchemy  
+- ReportLab  
+- pytest  
 
 ---
+
+### 📚 Libraries Used
+
+- **nicegui** – UI framework  
+- **sqlmodel** – ORM  
+- **sqlalchemy** – database toolkit  
+- **reportlab** – PDF generation  
+- **python-dotenv** – configuration  
+- **pytest** – testing  
+- **pytest-cov** – coverage
+  
+---
+
+## Repository Struktur
+
+study_planner/
+├── __init__.py
+├── __main__.py
+├── application.py
+│
+├── data_access/
+│   └── db.py
+│
+├── domain/
+│   ├── __init__.py
+│   └── models.py
+│
+├── services/
+│   ├── __init__.py
+│   ├── study_session_service.py
+│   ├── subject_service.py
+│   └── task_service.py
+│
+└── ui/
+    ├── __init__.py
+    ├── controllers.py
+    └── pages.py
+    ### Ordner-Erklärung
+
+- `application.py`: Startet und konfiguriert die Anwendung.
+- `data_access/`: Enthält den Zugriff auf die Datenbank und die Persistenzlogik.
+- `domain/`: Enthält die Domain-Modelle bzw. Klassen der Anwendung.
+- `services/`: Enthält die Businesslogik und die Services der Anwendung.
+- `ui/`: Enthält die Benutzeroberfläche, Seiten und Controller.
+
+---
+
+## 🚀 Verwendung
+
+---
+
+## 🧪 Tests
+
+---
+
+## 👥 Team & Beiträge
+
+| Name      | Beitrag |
+|-----------|--------------|
+| Andri Bader | ... |
+| Benjamin Sahile | ... |
+---
+## 📝 Lizens
+
+Dieses Projekt wurde ausschliesslich für Bildungszwecke im Rahmen des Moduls «Advanced Programming» an der FHNW erstellt.
+
+[MIT License](LICENSE)
