@@ -61,3 +61,19 @@ class SubjectService:
         session.delete(subject)
         session.commit()
         return True
+
+    def get_credit_summary(self, session: Session, semester: str | None = None) -> dict[str, int]:
+        subjects = self.get_all_subjects(session)
+
+        if semester and semester != "All semesters":
+            subjects = [subject for subject in subjects if subject.semester == semester]
+
+        planned = sum(subject.ects for subject in subjects)
+        completed = sum(subject.ects for subject in subjects if subject.is_completed)
+        open_credits = planned - completed
+
+        return {
+            "planned": planned,
+            "completed": completed,
+            "open": open_credits,
+        }
