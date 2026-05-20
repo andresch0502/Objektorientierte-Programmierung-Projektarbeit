@@ -145,6 +145,11 @@ def show_home_page() -> None:
                     task_list = ui.column().classes("w-full")
 
             with ui.tab_panel(statistics_tab):
+                with ui.card().classes("w-full"):
+                    section_title("Export", "Export subjects and tasks as CSV files for Excel.")
+                    export_subjects_button = ui.button("Export Subjects CSV").classes("w-full")
+                    export_tasks_button = ui.button("Export Tasks CSV").classes("w-full")
+
                 statistics_box = ui.column().classes("w-full")
 
         with ui.dialog() as edit_subject_dialog, ui.card().classes("w-full"):
@@ -620,8 +625,18 @@ def show_home_page() -> None:
             refresh_statistics_box()
             ui.notify("Task completed.")
 
+        def handle_export_subjects() -> None:
+            path = export_subjects_csv()
+            ui.notify(f"Subjects exported to: {path}")
+
+        def handle_export_tasks() -> None:
+            path = export_tasks_csv()
+            ui.notify(f"Tasks exported to: {path}")
+
         add_subject_button.on("click", lambda: handle_add_subject())
         add_task_button.on("click", lambda: handle_add_task())
+        export_subjects_button.on("click", lambda: handle_export_subjects())
+        export_tasks_button.on("click", lambda: handle_export_tasks())
         cancel_edit_subject_button.on("click", lambda: edit_subject_dialog.close())
         save_edit_subject_button.on("click", lambda: handle_save_edited_subject())
 
