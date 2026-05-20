@@ -55,6 +55,11 @@ def remove_subject(subject_id: int) -> bool:
         return subject_service.delete_subject(session, subject_id)
 
 
+def get_credit_summary(semester: str | None = None) -> dict[str, int]:
+    with database.session_scope() as session:
+        return subject_service.get_credit_summary(session, semester)
+
+
 def get_tasks() -> list[Task]:
     with database.session_scope() as session:
         return task_service.get_all_tasks(session)
