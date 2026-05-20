@@ -27,7 +27,7 @@ def show_home_page() -> None:
     ui.query("body").style("background-color: #f5f7fb;")
 
     with ui.column().style("max-width: 1200px; margin: 0 auto; padding: 24px; width: 100%; gap: 20px;"):
-        ui.label(get_app_title()).classes("text-3xl font-bold")
+        ui.label(f"📚 {get_app_title()}").classes("text-3xl font-bold")
         ui.label("Plan your subjects, tasks, priorities, and weekly workload.").classes("text-gray-600")
 
         edit_subject_state = {"id": None}
@@ -38,10 +38,10 @@ def show_home_page() -> None:
                 ui.label(subtitle).classes("text-sm text-gray-500")
 
         with ui.tabs().classes("w-full") as tabs:
-            dashboard_tab = ui.tab("Dashboard")
-            subjects_tab = ui.tab("Subjects")
-            tasks_tab = ui.tab("Tasks")
-            statistics_tab = ui.tab("Statistics")
+            dashboard_tab = ui.tab("🏠 Dashboard")
+            subjects_tab = ui.tab("📚 Subjects")
+            tasks_tab = ui.tab("📝 Tasks")
+            statistics_tab = ui.tab("📊 Statistics")
 
         with ui.tab_panels(tabs, value=dashboard_tab).classes("w-full"):
             with ui.tab_panel(dashboard_tab):
@@ -66,7 +66,7 @@ def show_home_page() -> None:
 
             with ui.tab_panel(subjects_tab):
                 with ui.card().classes("w-full"):
-                    section_title("Add New Subject")
+                    section_title("📚 Add New Subject")
                     subject_name_input = ui.input("Subject name").classes("w-full")
                     subject_ects_input = ui.input("ECTS").classes("w-full")
                     subject_semester_select = ui.select(
@@ -85,13 +85,13 @@ def show_home_page() -> None:
                     add_subject_button = ui.button("Add subject").classes("w-full")
 
                 with ui.card().classes("w-full"):
-                    section_title("Existing Subjects")
+                    section_title("🗂️ Existing Subjects")
                     subject_list = ui.column().classes("w-full")
 
             with ui.tab_panel(tasks_tab):
                 with ui.card().classes("w-full"):
                     section_title(
-                        "Add Task",
+                        "📝 Add Task",
                         "Mandatory: Subject, Task title, Priority. Optional: deadline, planned date, estimated minutes, notes.",
                     )
 
@@ -143,19 +143,19 @@ def show_home_page() -> None:
                     add_task_button = ui.button("Add task").classes("w-full")
 
                 with ui.card().classes("w-full"):
-                    section_title("Task Overview")
+                    section_title("✅ Task Overview")
                     task_list = ui.column().classes("w-full")
 
             with ui.tab_panel(statistics_tab):
                 with ui.card().classes("w-full"):
-                    section_title("Export", "Export subjects and tasks as CSV files for Excel.")
+                    section_title("📤 Export", "Export subjects and tasks as CSV files for Excel.")
                     export_subjects_button = ui.button("Export Subjects CSV").classes("w-full")
                     export_tasks_button = ui.button("Export Tasks CSV").classes("w-full")
 
                 statistics_box = ui.column().classes("w-full")
 
         with ui.dialog() as edit_subject_dialog, ui.card().classes("w-full"):
-            ui.label("Edit Subject").classes("text-xl font-semibold")
+            ui.label("✏️ Edit Subject").classes("text-xl font-semibold")
             edit_subject_name_input = ui.input("Subject name").classes("w-full")
             edit_subject_ects_input = ui.input("ECTS").classes("w-full")
             edit_subject_semester_select = ui.select(
@@ -183,7 +183,12 @@ def show_home_page() -> None:
                 if subject.id is not None
             }
 
-        def build_optional_date(day_value: str | None, month_value: str | None, year_value: str | None, label: str) -> date | None:
+        def build_optional_date(
+            day_value: str | None,
+            month_value: str | None,
+            year_value: str | None,
+            label: str,
+        ) -> date | None:
             if not day_value and not month_value and not year_value:
                 return None
 
@@ -227,7 +232,9 @@ def show_home_page() -> None:
 
                 for subject in subjects:
                     with ui.card().classes("w-full"):
-                        with ui.row().style("width: 100%; justify-content: space-between; align-items: center; gap: 12px;"):
+                        with ui.row().style(
+                            "width: 100%; justify-content: space-between; align-items: center; gap: 12px;"
+                        ):
                             with ui.column().classes("gap-1"):
                                 ui.label(subject.name).classes("font-medium")
                                 ui.label(f"ECTS: {subject.ects}").classes("text-sm text-gray-600")
@@ -253,7 +260,7 @@ def show_home_page() -> None:
             credit_box.clear()
             with credit_box:
                 selected_semester = dashboard_semester_select.value or "All semesters"
-                section_title("Credits Overview", f"Showing credits for: {selected_semester}")
+                section_title("🎓 Credits Overview", f"Showing credits for: {selected_semester}")
                 credits = get_credit_summary(selected_semester)
 
                 with ui.row().classes("w-full"):
@@ -272,7 +279,7 @@ def show_home_page() -> None:
         def refresh_progress_box() -> None:
             progress_box.clear()
             with progress_box:
-                section_title("Progress")
+                section_title("📈 Progress")
                 progress = get_task_progress()
                 subjects = get_subjects()
 
@@ -296,7 +303,7 @@ def show_home_page() -> None:
         def refresh_urgent_task_list() -> None:
             urgent_task_list.clear()
             with urgent_task_list:
-                section_title("Urgent Tasks")
+                section_title("⚠️ Urgent Tasks")
                 urgent_tasks = get_urgent_tasks()
                 subject_names = get_subject_name_map()
 
@@ -320,17 +327,14 @@ def show_home_page() -> None:
         def refresh_week_overview() -> None:
             week_overview_box.clear()
             with week_overview_box:
-                section_title("Weekly Overview", "Tasks planned for the next 7 days")
+                section_title("🗓️ Weekly Overview", "Tasks planned for the next 7 days")
                 tasks = get_tasks()
                 subject_names = get_subject_name_map()
                 start_day = date.today()
 
                 for offset in range(7):
                     current_day = start_day + timedelta(days=offset)
-                    day_tasks = [
-                        task for task in tasks
-                        if task.planned_date == current_day
-                    ]
+                    day_tasks = [task for task in tasks if task.planned_date == current_day]
 
                     with ui.card().classes("w-full"):
                         ui.label(current_day.strftime("%A, %Y-%m-%d")).classes("font-medium")
@@ -358,7 +362,9 @@ def show_home_page() -> None:
 
                 for task in tasks:
                     with ui.card().classes("w-full"):
-                        with ui.row().style("width: 100%; justify-content: space-between; align-items: start; gap: 12px;"):
+                        with ui.row().style(
+                            "width: 100%; justify-content: space-between; align-items: start; gap: 12px;"
+                        ):
                             with ui.column().classes("gap-1"):
                                 title_prefix = "✅ " if task.is_completed else ""
                                 ui.label(f"{title_prefix}{task.title}").classes("font-medium")
@@ -375,7 +381,9 @@ def show_home_page() -> None:
                                     ui.label(f"Planned date: {task.planned_date}").classes("text-sm text-gray-600")
 
                                 if task.estimated_minutes:
-                                    ui.label(f"Estimated time: {task.estimated_minutes} minutes").classes("text-sm text-gray-600")
+                                    ui.label(
+                                        f"Estimated time: {task.estimated_minutes} minutes"
+                                    ).classes("text-sm text-gray-600")
 
                                 if task.notes:
                                     ui.label(task.notes).classes("text-sm text-gray-500")
@@ -389,7 +397,7 @@ def show_home_page() -> None:
         def refresh_statistics_box() -> None:
             statistics_box.clear()
             with statistics_box:
-                section_title("Statistics")
+                section_title("📊 Statistics")
 
                 tasks = get_tasks()
                 subjects = get_subjects()
@@ -494,10 +502,7 @@ def show_home_page() -> None:
                     ui.label("No subjects available.").classes("text-gray-500")
                 else:
                     for subject in subjects:
-                        subject_tasks = [
-                            task for task in tasks
-                            if task.subject_id == subject.id
-                        ]
+                        subject_tasks = [task for task in tasks if task.subject_id == subject.id]
                         with ui.card().classes("w-full"):
                             ui.label(subject.name).classes("font-medium")
                             ui.label(f"ECTS: {subject.ects}").classes("text-sm text-gray-600")
@@ -591,15 +596,15 @@ def show_home_page() -> None:
             refresh_statistics_box()
             ui.notify("Subject updated.")
 
-        def handle_remove_subject(subject_id: int) -> None:
+        def handle_remove_subject(root: str) -> None:
             tasks = get_tasks()
-            linked_tasks = [task for task in tasks if task.subject_id == subject_id]
+            linked_tasks = [task for task in tasks if task.subject_id == root]
 
             if linked_tasks:
                 ui.notify("You cannot delete a subject that still has tasks.")
                 return
 
-            remove_subject(subject_id)
+            remove_subject(root)
             refresh_subject_list()
             refresh_subject_options()
             refresh_dashboard()
