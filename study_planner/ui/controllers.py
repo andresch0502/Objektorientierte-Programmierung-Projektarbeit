@@ -77,24 +77,14 @@ def get_tasks() -> list[Task]:
         return task_service.get_all_tasks(session)
 
 
-def get_urgent_tasks() -> list[Task]:
+def get_tasks_per_subject(semester: str | None = None) -> list[dict[str, int | str]]:
     with database.session_scope() as session:
-        return task_service.get_urgent_tasks(session)
+        return task_service.get_tasks_per_subject(session, semester)
 
 
-def get_task_progress() -> dict[str, int]:
+def get_priority_distribution(semester: str | None = None) -> dict[str, int]:
     with database.session_scope() as session:
-        return task_service.get_task_progress(session)
-
-
-def get_tasks_per_subject() -> list[dict[str, int | str]]:
-    with database.session_scope() as session:
-        return task_service.get_tasks_per_subject(session)
-
-
-def get_priority_distribution() -> dict[str, int]:
-    with database.session_scope() as session:
-        return task_service.get_priority_distribution(session)
+        return task_service.get_priority_distribution(session, semester)
 
 
 def export_subjects_csv() -> str:
