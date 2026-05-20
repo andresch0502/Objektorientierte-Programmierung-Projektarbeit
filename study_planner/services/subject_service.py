@@ -8,8 +8,46 @@ class SubjectService:
         statement = select(Subject)
         return list(session.exec(statement))
 
-    def create_subject(self, session: Session, name: str, ects: int = 0) -> Subject:
-        subject = Subject(name=name, ects=ects)
+    def create_subject(
+        self,
+        session: Session,
+        name: str,
+        ects: int = 0,
+        semester: str = "Semester 1",
+        moodle_link: str = "",
+    ) -> Subject:
+        subject = Subject(
+            name=name,
+            ects=ects,
+            semester=semester,
+            moodle_link=moodle_link,
+            is_completed=False,
+        )
+        session.add(subject)
+        session.commit()
+        session.refresh(subject)
+        return subject
+
+    def update_subject(
+        self,
+        session: Session,
+        subject_id: int,
+        name: str,
+        ects: int,
+        semester: str,
+        moodle_link: str,
+        is_completed: bool,
+    ) -> Subject | None:
+        subject = session.get(Subject, subject_id)
+        if subject is None:
+            return None
+
+        subject.name = name
+        subject.ects = ects
+        subject.semester = semester
+        subject.moodle_link = moodle_link
+        subject.is_completed = is_completed
+
         session.add(subject)
         session.commit()
         session.refresh(subject)
