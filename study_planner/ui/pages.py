@@ -10,8 +10,10 @@ from study_planner.ui.controllers import (
     export_subjects_csv,
     export_tasks_csv,
     get_app_title,
+    get_completed_subjects,
     get_credit_summary,
     get_priority_distribution,
+    get_semester_statistics,
     get_subjects,
     get_task_progress,
     get_tasks,
@@ -393,6 +395,8 @@ def show_home_page() -> None:
                 subjects = get_subjects()
                 tasks_per_subject = get_tasks_per_subject()
                 priority_distribution = get_priority_distribution()
+                semester_statistics = get_semester_statistics()
+                completed_subjects = get_completed_subjects()
 
                 if not tasks and not subjects:
                     ui.label("No statistics available yet.").classes("text-gray-500")
@@ -448,6 +452,41 @@ def show_home_page() -> None:
                             ],
                         }).style("height: 350px; width: 100%;")
 
+                if semester_statistics:
+                    ui.separator()
+                    ui.label("Semester Credits").classes("text-lg font-semibold")
+                    with ui.card().classes("w-full"):
+                        ui.echart({
+                            "tooltip": {"trigger": "axis"},
+                            "legend": {"data": ["Planned", "Completed"]},
+                            "xAxis": {
+                                "type": "category",
+                                "data": [item["semester"] for item in semester_statistics],
+                            },
+                            "yAxis": {"type": "value"},
+                            "series": [
+                                {
+                                    "name": "Planned",
+                                    "type": "bar",
+                                    "data": [item["planned_credits"] for item in semester_statistics],
+                                },
+                                {
+                                    "name": "Completed",
+                                    "type": "bar",
+                                    "data": [item["completed_credits"] for item in semester_statistics],
+                                },
+                            ],
+                        }).style("height: 350px; width: 100%;")
+
+                    ui.label("Semester Detail View").classes("text-lg font-semibold")
+                    for item in semester_statistics:
+                        with ui.card().classes("w-full"):
+                            ui.label(str(item["semester"])).classes("font-medium")
+                            ui.label(f"Modules: {item['modules']}").classes("text-sm text-gray-600")
+                            ui.label(f"Completed modules: {item['completed_modules']}").classes("text-sm text-gray-600")
+                            ui.label(f"Planned credits: {item['planned_credits']}").classes("text-sm text-gray-600")
+                            ui.label(f"Completed credits: {item['completed_credits']}").classes("text-sm text-gray-600")
+
                 ui.separator()
                 ui.label("Tasks per Subject (Detail View)").classes("text-lg font-semibold")
 
@@ -470,6 +509,18 @@ def show_home_page() -> None:
                             ui.label(
                                 f"Planned minutes: {sum(task.estimated_minutes for task in subject_tasks)}"
                             ).classes("text-sm text-gray-600")
+
+                ui.separator()
+                ui.label("Completed Modules").classes("text-lg font-semibold")
+
+                if not completed_subjects:
+                    ui.label("No completed modules yet.").classes("text-gray-500")
+                else:
+                    for subject in completed_subjects:
+                        with ui.card().classes("w-full"):
+                            ui.label(subject.name).classes("font-medium")
+                            ui.label(f"Semester: {subject.semester}").classes("text-sm text-gray-600")
+                            ui.label(f"ECTS: {subject.ects}").classes("text-sm text-gray-600")
 
         def refresh_dashboard() -> None:
             refresh_credit_box()
