@@ -20,9 +20,34 @@ def get_subjects() -> list[Subject]:
         return subject_service.get_all_subjects(session)
 
 
-def add_subject(name: str, ects: int = 0) -> Subject:
+def add_subject(
+    name: str,
+    ects: int = 0,
+    semester: str = "Semester 1",
+    moodle_link: str = "",
+) -> Subject:
     with database.session_scope() as session:
-        return subject_service.create_subject(session, name, ects)
+        return subject_service.create_subject(session, name, ects, semester, moodle_link)
+
+
+def edit_subject(
+    subject_id: int,
+    name: str,
+    ects: int,
+    semester: str,
+    moodle_link: str,
+    is_completed: bool,
+) -> Subject | None:
+    with database.session_scope() as session:
+        return subject_service.update_subject(
+            session,
+            subject_id,
+            name,
+            ects,
+            semester,
+            moodle_link,
+            is_completed,
+        )
 
 
 def remove_subject(subject_id: int) -> bool:
