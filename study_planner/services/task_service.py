@@ -10,6 +10,18 @@ class TaskService:
         statement = select(Task)
         return list(session.exec(statement))
 
+    def _get_subject_ids_for_semester(
+        self,
+        session: Session,
+        semester: str | None = None,
+    ) -> set[int]:
+        subjects = list(session.exec(select(Subject)))
+
+        if semester and semester != "All semesters":
+            subjects = [subject for subject in subjects if subject.semester == semester]
+
+        return {subject.id for subject in subjects if subject.id is not None}
+
     def get_urgent_tasks(self, session: Session) -> list[Task]:
         tasks = self.get_all_tasks(session)
         open_tasks = [task for task in tasks if not task.is_completed and task.deadline is not None]
@@ -31,8 +43,16 @@ class TaskService:
             "open": open_tasks,
         }
 
-    def get_tasks_per_subject(self, session: Session) -> list[dict[str, int | str]]:
+    def get_tasks_per_subject(
+        self,
+        session: Session,
+        semester: str | None = None,
+    ) -> list[dict[str, int | str]]:
         subjects = list(session.exec(select(Subject)))
+
+        if semester and semester != "All semesters":
+            subjects = [subject for subject in subjects if subject.semester == semester]
+
         tasks = self.get_all_tasks(session)
 
         result: list[dict[str, int | str]] = []
@@ -48,8 +68,17 @@ class TaskService:
 
         return result
 
-    def get_priority_distribution(self, session: Session) -> dict[str, int]:
+    def get_priority_distribution(
+        self,
+        session: Session,
+        semester: str | None = None,
+    ) -> dict[str, int]:
         tasks = self.get_all_tasks(session)
+
+        if semester and semester != "All semesters":
+            subject_ids = self._get_subject_ids_for_semester(session, semester)
+            tasks = [task for task in tasks if task.subject_id in subject_ids]
+
         return {
             "high": len([task for task in tasks if task.priority == "high"]),
             "medium": len([task for task in tasks if task.priority == "medium"]),
