@@ -293,7 +293,7 @@ def show_home_page() -> None:
                                     on_click=lambda task_id=task.id: handle_complete_task(task_id),
                                 )
 
-                def refresh_statistics_box() -> None:
+        def refresh_statistics_box() -> None:
             statistics_box.clear()
             with statistics_box:
                 section_title("Statistics")
