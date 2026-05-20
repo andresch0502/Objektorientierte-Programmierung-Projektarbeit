@@ -7,6 +7,8 @@ from study_planner.ui.controllers import (
     add_task,
     complete_task,
     edit_subject,
+    export_subjects_csv,
+    export_tasks_csv,
     get_app_title,
     get_credit_summary,
     get_priority_distribution,
