@@ -8,6 +8,9 @@ class Subject(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
     ects: int = 0
+    semester: str = "Semester 1"
+    moodle_link: str = ""
+    is_completed: bool = False
 
 
 class Task(SQLModel, table=True):
