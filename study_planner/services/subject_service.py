@@ -77,3 +77,38 @@ class SubjectService:
             "completed": completed,
             "open": open_credits,
         }
+
+    def get_semester_statistics(self, session: Session) -> list[dict[str, int | str]]:
+        subjects = self.get_all_subjects(session)
+
+        semesters = sorted({subject.semester for subject in subjects})
+        result: list[dict[str, int | str]] = []
+
+        for semester in semesters:
+            semester_subjects = [subject for subject in subjects if subject.semester == semester]
+            planned_credits = sum(subject.ects for subject in semester_subjects)
+            completed_credits = sum(subject.ects for subject in semester_subjects if subject.is_completed)
+            completed_modules = len([subject for subject in semester_subjects if subject.is_completed])
+
+            result.append(
+                {
+                    "semester": semester,
+                    "modules": len(semester_subjects),
+                    "completed_modules": completed_modules,
+                    "planned_credits": planned_credits,
+                    "completed_credits": completed_credits,
+                }
+            )
+
+        return result
+
+    def get_completed_subjects(self, session: Session, semester: str | None = None) -> list[Subject]:
+        subjects = self.get_all_subjects(session)
+        completed_subjects = [subject for subject in subjects if subject.is_completed]
+
+        if semester and semester != "All semesters":
+            completed_subjects = [
+                subject for subject in completed_subjects if subject.semester == semester
+            ]
+
+        return completed_subjects
