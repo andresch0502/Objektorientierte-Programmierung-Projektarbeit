@@ -9,9 +9,16 @@ class ExportService:
         path = Path(output_path)
         path.parent.mkdir(parents=True, exist_ok=True)
 
-        with path.open("w", newline="", encoding="utf-8") as file:
-            writer = csv.writer(file)
-            writer.writerow(["id", "name", "ects", "semester", "moodle_link", "is_completed"])
+        with path.open("w", newline="", encoding="utf-8-sig") as file:
+            writer = csv.writer(file, delimiter=";")
+            writer.writerow([
+                "ID",
+                "Subject Name",
+                "ECTS",
+                "Semester",
+                "Moodle Link",
+                "Completed",
+            ])
 
             for subject in subjects:
                 writer.writerow([
@@ -20,40 +27,51 @@ class ExportService:
                     subject.ects,
                     subject.semester,
                     subject.moodle_link,
-                    subject.is_completed,
+                    "Yes" if subject.is_completed else "No",
                 ])
 
         return str(path)
 
-    def export_tasks_to_csv(self, tasks: list[Task], output_path: str) -> str:
+    def export_tasks_to_csv(
+        self,
+        tasks: list[Task],
+        subjects: list[Subject],
+        output_path: str,
+    ) -> str:
         path = Path(output_path)
         path.parent.mkdir(parents=True, exist_ok=True)
 
-        with path.open("w", newline="", encoding="utf-8") as file:
-            writer = csv.writer(file)
+        subject_map = {
+            subject.id: subject.name
+            for subject in subjects
+            if subject.id is not None
+        }
+
+        with path.open("w", newline="", encoding="utf-8-sig") as file:
+            writer = csv.writer(file, delimiter=";")
             writer.writerow([
-                "id",
-                "title",
-                "deadline",
-                "planned_date",
-                "estimated_minutes",
-                "priority",
-                "is_completed",
-                "notes",
-                "subject_id",
+                "ID",
+                "Task Title",
+                "Subject",
+                "Deadline",
+                "Planned Date",
+                "Estimated Minutes",
+                "Priority",
+                "Completed",
+                "Notes",
             ])
 
             for task in tasks:
                 writer.writerow([
                     task.id,
                     task.title,
-                    task.deadline,
-                    task.planned_date,
+                    subject_map.get(task.subject_id, "No subject"),
+                    task.deadline.strftime("%d.%m.%Y") if task.deadline else "",
+                    task.planned_date.strftime("%d.%m.%Y") if task.planned_date else "",
                     task.estimated_minutes,
-                    task.priority,
-                    task.is_completed,
+                    task.priority.capitalize(),
+                    "Yes" if task.is_completed else "No",
                     task.notes,
-                    task.subject_id,
                 ])
 
         return str(path)
