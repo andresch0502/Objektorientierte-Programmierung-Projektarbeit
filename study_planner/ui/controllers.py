@@ -94,7 +94,8 @@ def export_subjects_csv() -> str:
 
 def export_tasks_csv() -> str:
     tasks = get_tasks()
-    return export_service.export_tasks_to_csv(tasks, "exports/tasks_export.csv")
+    subjects = get_subjects()
+    return export_service.export_tasks_to_csv(tasks, subjects, "exports/tasks_export.csv")
 
 
 def add_task(
