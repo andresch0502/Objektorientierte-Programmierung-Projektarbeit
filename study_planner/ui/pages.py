@@ -359,28 +359,46 @@ def show_home_page() -> None:
             week_overview_box.clear()
             with week_overview_box:
                 selected_semester = dashboard_semester_select.value or "All semesters"
-                section_title("🗓️ Weekly Overview", f"Tasks planned for the next 7 days ({selected_semester})")
+                section_title("🗓️ Weekly Calendar", f"Planned tasks for the next 7 days ({selected_semester})")
+
                 tasks = get_filtered_dashboard_tasks()
                 subject_names = get_subject_name_map()
                 start_day = date.today()
 
-                for offset in range(7):
-                    current_day = start_day + timedelta(days=offset)
-                    day_tasks = [task for task in tasks if task.planned_date == current_day]
+                with ui.element("div").style(
+                    "display: grid; "
+                    "grid-template-columns: repeat(7, minmax(150px, 1fr)); "
+                    "gap: 12px; "
+                    "width: 100%;"
+                ):
+                    for offset in range(7):
+                        current_day = start_day + timedelta(days=offset)
+                        day_tasks = [
+                            task for task in tasks
+                            if task.planned_date == current_day
+                        ]
 
-                    with ui.card().classes("w-full"):
-                        ui.label(current_day.strftime("%A, %Y-%m-%d")).classes("font-medium")
+                        with ui.card().style("min-height: 240px; width: 100%;"):
+                            ui.label(current_day.strftime("%a")).classes("text-sm text-gray-500")
+                            ui.label(current_day.strftime("%d.%m.%Y")).classes("font-semibold")
 
-                        if not day_tasks:
-                            ui.label("No tasks planned.").classes("text-sm text-gray-500")
-                            continue
+                            if not day_tasks:
+                                ui.label("No tasks").classes("text-sm text-gray-400")
+                                continue
 
-                        for task in day_tasks:
-                            subject_text = subject_names.get(task.subject_id, "No subject")
-                            ui.label(
-                                f"- {task.title} | {subject_text} | "
-                                f"{task.priority.capitalize()} | {task.estimated_minutes} min"
-                            ).classes("text-sm text-gray-700")
+                            for task in day_tasks:
+                                subject_text = subject_names.get(task.subject_id, "No subject")
+
+                                with ui.card().style("width: 100%; margin-top: 8px;"):
+                                    ui.label(task.title).classes("text-sm font-medium")
+                                    ui.label(subject_text).classes("text-xs text-gray-600")
+                                    ui.label(f"Priority: {task.priority.capitalize()}").classes("text-xs text-gray-600")
+
+                                    if task.estimated_minutes:
+                                        ui.label(f"{task.estimated_minutes} min").classes("text-xs text-gray-600")
+
+                                    if task.deadline:
+                                        ui.label(f"Due: {task.deadline}").classes("text-xs text-red-600")
 
         def refresh_task_list() -> None:
             task_list.clear()
