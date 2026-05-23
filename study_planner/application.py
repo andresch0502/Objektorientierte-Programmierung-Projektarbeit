@@ -1,3 +1,5 @@
+from nicegui import ui
+
 from study_planner.data_access.db import Database
 from study_planner.data_access.seed import seed_demo_data
 import study_planner.domain.models  # ensures SQLModel tables are registered
@@ -13,4 +15,4 @@ def setup_app() -> None:
     with database.session_scope() as session:
         seed_demo_data(session)
 
-    show_home_page()
+    ui.page("/")(show_home_page)
