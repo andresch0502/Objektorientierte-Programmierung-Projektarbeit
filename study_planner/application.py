@@ -3,7 +3,7 @@ from nicegui import ui
 from study_planner.data_access.db import Database
 from study_planner.data_access.seed import seed_demo_data
 import study_planner.domain.models  # ensures SQLModel tables are registered
-from study_planner.ui.pages import show_home_page
+from study_planner.ui.pages.main_page import show_home_page
 
 
 database = Database()
