@@ -261,6 +261,81 @@ study_planner/
 
 ## 🚀 Verwendung
 
+## How to Run
+
+> 🚧 An unser Projekt angepasst.
+
+### 1. Projekt-Setup
+
+- Für das Projekt wird **Python 3.13** oder die im Kurs verwendete Python-Version benötigt.
+- Erstelle und aktiviere eine virtuelle Umgebung:
+
+  - **macOS / Linux:**
+    ```bash
+    python3 -m venv .venv
+    source .venv/bin/activate
+    ```
+
+  - **Windows:**
+    ```bash
+    python -m venv .venv
+    .venv\Scripts\activate
+    ```
+
+- Installiere die Abhängigkeiten:
+  ```bash
+  pip install -r requirements.txt
+  ```
+
+### 2. Konfiguration
+
+* Stelle sicher, dass alle benötigten Pakete installiert sind.
+* Falls notwendig, passe Konfigurationswerte an, zum Beispiel:
+    * Datenbankpfad
+    * Port der Anwendung
+    * Umgebungsvariablen
+* Die Anwendung verwendet NiceGUI als browserbasierte Oberfläche und eine SQLite-Datenbank mit ORM für die Persistenz.
+
+### 3. Starten der Anwendung
+
+Starte die Anwendung, zum Beispiel mit:
+```bash
+  python main.py
+  ```
+
+oder, falls ihr mit einem Paketstart arbeitet: 
+```bash
+  python -m studyplanner
+  ```
+
+* Öffne danach die in der Konsole angezeigte URL im Browser.
+
+### 4. Nutzung der Anwendung
+
+Lernplaner verwenden
+
+1. Anwendung im Browser öffnen
+2. Mit E-Mail und Passwort einloggen
+3. Dashboard aufrufen
+4. Fächer / Module anlegen, bearbeiten oder löschen
+5. Aufgaben zu einem Fach erstellen
+6. Aufgabenstatus und Deadlines verwalten
+7. Offene Aufgaben und anstehende Deadlines im Dashboard ansehen
+
+Beispielhafter Ablauf
+
+1. Ein Benutzer loggt sich in die Anwendung ein.
+2. Danach öffnet er das Dashboard.
+3. Anschliessend legt er ein neues Fach / Modul an.
+4. Danach erstellt er eine oder mehrere Aufgaben für dieses Fach.
+5. Die Aufgaben werden in der Datenbank gespeichert und später wieder angezeigt.
+
+### 5. Technischer Hinweis
+
+Die Anwendung läuft als browserbasierte Webanwendung.
+Der Browser dient als Benutzeroberfläche, während die Geschäftslogik serverseitig verarbeitet wird.
+Die Daten werden über eine Datenbank mit ORM verwaltet, statt direkt mit SQL zu arbeiten.
+
 ---
 
 ## 🧪 Tests
