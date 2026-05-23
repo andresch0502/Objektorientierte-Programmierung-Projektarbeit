@@ -144,6 +144,63 @@ The application uses **SQLModel** to map domain objects to a SQLite database.
   
 ---
 
+## ✅ Projektanforderungen
+
+Unser Projekt erfüllt die zentralen Anforderungen des Moduls:
+
+1. browserbasierte Webanwendung mit **NiceGUI**
+2. **Datenvalidierung** in der Anwendung
+3. **Datenbankverwaltung mit ORM**
+
+---
+
+## 1. Browserbasierte Anwendung (NiceGUI)
+
+Unsere Anwendung wird mit **NiceGUI** als browserbasierte Webanwendung umgesetzt.  
+Benutzer können über den Browser:
+
+- sich einloggen
+- das Dashboard anzeigen
+- Fächer / Module verwalten
+- Aufgaben erstellen, bearbeiten und löschen
+- offene Aufgaben und Deadlines ansehen
+
+Der Browser dient dabei als Benutzeroberfläche, während die Logik der Anwendung serverseitig verarbeitet wird.
+
+---
+
+## 2. Datenvalidierung
+
+In unserer Anwendung werden Eingaben geprüft, damit nur gültige Daten gespeichert werden.  
+Dadurch werden Fehler vermieden und die Benutzerführung verbessert.
+
+Beispiele:
+
+- Login-Daten müssen korrekt eingegeben werden
+- Pflichtfelder wie Fachname oder Aufgabentitel dürfen nicht leer sein
+- Deadlines müssen ein gültiges Datum haben
+- Aufgabenstatus darf nur erlaubte Werte enthalten
+
+---
+
+## 3. Datenbankverwaltung
+
+Die Daten unserer Anwendung werden in einer **SQLite-Datenbank** gespeichert.  
+Für die Verwaltung verwenden wir ein **ORM**, damit die Datenbank über Python-Modelle statt über direktes SQL angesprochen wird.
+
+Gespeichert werden unter anderem:
+
+- Benutzer
+- Fächer / Module
+- Aufgaben
+
+Dabei gelten zum Beispiel diese Beziehungen:
+
+- Ein **User** kann mehrere **Subjects** haben
+- Ein **Subject** kann mehrere **Tasks** enthalten
+
+---
+
 ## ⚙️ Implementation
 
 ### Technology
