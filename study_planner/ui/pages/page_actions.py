@@ -12,6 +12,44 @@ def handle_login(username_input, password_input, login_func) -> None:
         ui.notify("Invalid username or password.", color="negative")
 
 
+def handle_register(
+    username_input,
+    password_input,
+    confirm_password_input,
+    register_func,
+    login_func,
+) -> None:
+    username = username_input.value or ""
+    password = password_input.value or ""
+    confirm_password = confirm_password_input.value or ""
+
+    if not username.strip():
+        ui.notify("Please enter a username.")
+        return
+
+    if not password:
+        ui.notify("Please enter a password.")
+        return
+
+    if password != confirm_password:
+        ui.notify("Passwords do not match.", color="negative")
+        return
+
+    success, message = register_func(username, password)
+
+    if not success:
+        ui.notify(message, color="negative")
+        return
+
+    login_success = login_func(username, password)
+    if login_success:
+        ui.notify("Registration successful.")
+        ui.navigate.reload()
+        return
+
+    ui.notify("Registration worked, but automatic login failed.", color="warning")
+
+
 def handle_logout(logout_func) -> None:
     logout_func()
     ui.notify("Logged out.")
