@@ -1,8 +1,11 @@
 from nicegui import app
 
+from study_planner.data_access.db import Database
+from study_planner.services.user_service import UserService
 
-DEMO_USERNAME = "admin"
-DEMO_PASSWORD = "studyplanner123"
+
+database = Database()
+user_service = UserService()
 
 
 def is_logged_in() -> bool:
@@ -10,11 +13,20 @@ def is_logged_in() -> bool:
 
 
 def login(username: str, password: str) -> bool:
-    if username == DEMO_USERNAME and password == DEMO_PASSWORD:
-        app.storage.user["authenticated"] = True
-        app.storage.user["username"] = username
-        return True
-    return False
+    with database.session_scope() as session:
+        user = user_service.authenticate_user(session, username, password)
+
+    if user is None:
+        return False
+
+    app.storage.user["authenticated"] = True
+    app.storage.user["username"] = user.username
+    return True
+
+
+def register(username: str, password: str) -> tuple[bool, str]:
+    with database.session_scope() as session:
+        return user_service.register_user(session, username, password)
 
 
 def logout() -> None:
