@@ -1,6 +1,6 @@
 from nicegui import ui
 
-from study_planner.ui.auth import get_logged_in_username, is_logged_in, login, logout
+from study_planner.ui.auth import get_logged_in_username, is_logged_in, login, logout, register
 from study_planner.ui.controllers import (
     add_subject,
     add_task,
@@ -28,6 +28,7 @@ from study_planner.ui.pages.page_actions import (
     handle_export_tasks,
     handle_login,
     handle_logout,
+    handle_register,
     handle_remove_subject,
     handle_save_edited_subject,
 )
@@ -59,7 +60,14 @@ def show_home_page() -> None:
                 login_components["username_input"],
                 login_components["password_input"],
                 login,
-            )
+            ),
+            lambda: handle_register(
+                login_components["username_input"],
+                login_components["password_input"],
+                login_components["confirm_password_input"],
+                register,
+                login,
+            ),
         )
         return
 
