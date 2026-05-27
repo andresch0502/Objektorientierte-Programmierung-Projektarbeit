@@ -227,13 +227,15 @@ Dabei gelten zum Beispiel diese Beziehungen:
 
 ## Repository Struktur
 
+```text
 study_planner/
 ├── __init__.py
 ├── __main__.py
 ├── application.py
 │
 ├── data_access/
-│   └── db.py
+│   ├── db.py
+│   └── seed.py
 │
 ├── domain/
 │   ├── __init__.py
@@ -241,14 +243,28 @@ study_planner/
 │
 ├── services/
 │   ├── __init__.py
-│   ├── study_session_service.py
+│   ├── export_service.py
 │   ├── subject_service.py
-│   └── task_service.py
+│   ├── task_service.py
+│   └── user_service.py
 │
 └── ui/
     ├── __init__.py
+    ├── auth.py
     ├── controllers.py
-    └── pages.py
+    └── pages/
+      ├── init.py
+      ├── auth_view.py
+      ├── dashboard_section.py
+      ├── main_page.py
+      ├── page_actions.py
+      ├── page_helpers.py
+      ├── page_refresh.py
+      ├── shared.py
+      ├── statistics_section.py
+      ├── subjects_section.py
+      └── tasks_section.py
+```
     ### Ordner-Erklärung
 
 - `application.py`: Startet und konfiguriert die Anwendung.
