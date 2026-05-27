@@ -1,6 +1,6 @@
 # 📚 StudyPlanner – Study Planning
 
-UI SHOWCASE BILD EINFÜGEN
+<img width="1511" height="790" alt="image" src="https://github.com/user-attachments/assets/e9d12f8b-d49a-48a2-b72a-b700e97da224" />
 
 ---
 
@@ -99,6 +99,7 @@ The application allows users to:
 
 ### Wireframes / Mockups
 
+<img width="1297" height="743" alt="image" src="https://github.com/user-attachments/assets/26e82993-d69a-43f8-b3d6-788829b0ce38" />
 
 
 ---
@@ -253,7 +254,7 @@ study_planner/
     ├── auth.py
     ├── controllers.py
     └── pages/
-      ├── init.py
+      ├── __init__.py
       ├── auth_view.py
       ├── dashboard_section.py
       ├── main_page.py
@@ -316,12 +317,8 @@ study_planner/
 
 Starte die Anwendung, zum Beispiel mit:
 ```bash
-  python main.py
-  ```
-
-oder, falls ihr mit einem Paketstart arbeitet: 
-```bash
-  python -m studyplanner
+cd ..
+python3 -m study_planner
   ```
 
 * Öffne danach die in der Konsole angezeigte URL im Browser.
