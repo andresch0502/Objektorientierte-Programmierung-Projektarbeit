@@ -1,6 +1,6 @@
 # 📚 StudyPlanner – Study Planning
 
-<img width="1511" height="790" alt="image" src="https://github.com/user-attachments/assets/e9d12f8b-d49a-48a2-b72a-b700e97da224" />
+![UI Showcase](docs/ui-images/UI.png)
 
 ---
 
@@ -82,8 +82,7 @@ Die Anwendung ermöglicht es Benutzern:
 
 ## 🧩 Use Cases
 
-<img width="1404" height="1120" alt="image" src="https://github.com/user-attachments/assets/80f09e31-75a7-4c10-b508-19302cdae488" />
-
+![Use Case Diagramm](docs/architecture-diagrams/Use_Case.png)
 
 ### Main Use Cases
 - Login (Benutzer)  
@@ -100,14 +99,13 @@ Die Anwendung ermöglicht es Benutzern:
 
 ### Wireframes / Mockups
 
-<img width="1297" height="743" alt="image" src="https://github.com/user-attachments/assets/26e82993-d69a-43f8-b3d6-788829b0ce38" />
-
+![Wireframes und Mockups](docs/ui-images/Mockup.png)
 
 ---
 
 ## 🏛️ Architecture
 
-<img width="1223" height="695" alt="image" src="https://github.com/user-attachments/assets/1da9430e-ebb2-4398-a1ca-af227dd117ce" />
+![Architektur](docs/architecture-diagrams/Architecture.png)
 
 
 ## Schichten
@@ -132,7 +130,7 @@ Die Anwendung ermöglicht es Benutzern:
 
 ## 🗄️ Database and ORM
 
-<img width="1385" height="506" alt="image" src="https://github.com/user-attachments/assets/4dd34835-a784-4e59-a393-41990b725de7" />
+![Datenbank und ORM](docs/architecture-diagrams/Database_and_ORM.png)
 
 Die Anwendung verwendet **SQLModel**, um Domain-Objekte auf eine SQLite-Datenbank abzubilden.
 
