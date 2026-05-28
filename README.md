@@ -119,8 +119,6 @@ Die Anwendung ermöglicht es Benutzern:
 
 ## 🗄️ Database and ORM
 
-![Datenbank und ORM](docs/architecture-diagrams/Database_and_ORM.png)
-
 Die Anwendung verwendet **SQLModel**, um Domain-Objekte auf eine SQLite-Datenbank abzubilden.
 
 ### Entitäten
