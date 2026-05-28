@@ -72,14 +72,6 @@ Die Anwendung ermöglicht es Benutzern:
 
 ---
 
-### 5. Benutzerdaten / Systemübersicht anzeigen (Admin)
-**Als Admin möchte ich Benutzer- und Systemdaten ansehen, damit ich die Anwendung überwachen und verwalten kann.**
-
-- **Eingaben:** keine oder ausgewählter Benutzer (`int | None`)
-- **Ausgaben:** Benutzerliste, Fächer, Aufgaben, Systemübersicht
-
----
-
 ## 🧩 Use Cases
 
 ![Use Case Diagramm](docs/architecture-diagrams/Use_Case.png)
@@ -89,11 +81,9 @@ Die Anwendung ermöglicht es Benutzern:
 - Dashboard anzeigen (Benutzer)  
 - Fächer / Module verwalten (Benutzer)  
 - Aufgaben verwalten (Benutzer)  
-- Benutzerdaten / Systemübersicht anzeigen (Admin)   
 
 ### Actors
 - Benutzer  
-- Admin  
 
 ---
 
@@ -218,11 +208,7 @@ Dabei gelten zum Beispiel diese Beziehungen:
 
 - **nicegui** – UI framework  
 - **sqlmodel** – ORM  
-- **sqlalchemy** – database toolkit  
-- **reportlab** – PDF generation  
-- **python-dotenv** – configuration  
-- **pytest** – testing  
-- **pytest-cov** – coverage
+- **pytest** – testing 
   
 ---
 
@@ -315,9 +301,9 @@ study_planner/
 
 ### 3. Starten der Anwendung
 
-Starte die Anwendung, zum Beispiel mit:
+Starte die Anwendung mit:
 ```bash
-cd ..
+cd Objektorientierte-Programmierung-Projektarbeit-main
 python3 -m study_planner
   ```
 
@@ -404,5 +390,3 @@ pytest -v
 ## 📝 Lizens
 
 Dieses Projekt wurde ausschliesslich für Bildungszwecke im Rahmen des Moduls «Advanced Programming» an der FHNW erstellt.
-
-[MIT License](LICENSE)
