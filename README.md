@@ -355,14 +355,53 @@ Die Daten werden über eine Datenbank mit ORM verwaltet, statt direkt mit SQL zu
 
 ## 🧪 Tests
 
+### Test mix:
+
+- **Insgesamt 23 Tests**
+- **19 Unit Tests:** z. B. Benutzerregistrierung, Login, Fach erstellen/bearbeiten/löschen, Aufgabe erstellen, Aufgabe als erledigt markieren, Fortschritt berechnen, Prioritätsverteilung, CSV-Export
+- **2 Datenbank-Tests:** z. B. Speicherung von Fächern in der Datenbank, Rollback bei Fehlern
+- **2 Integration Tests:** z. B. Zusammenspiel zwischen Services und Datenbank, Persistenz über mehrere Datenbank-Sessions
+
+---
+
+### Template für Testfälle
+
+1. **Test case ID** – eindeutige Nummer, z. B. `TC_001`
+2. **Test case title/description** – Was wird getestet?
+3. **Preconditions** – Voraussetzungen vor dem Test
+4. **Test steps** – Schritte, die ausgeführt werden
+5. **Test data/input** – verwendete Eingabedaten
+6. **Expected result** – erwartetes Ergebnis
+7. **Actual result** – tatsächliches Ergebnis
+8. **Status** – bestanden oder fehlgeschlagen
+9. **Comments** – zusätzliche Hinweise oder gefundene Fehler
+
+---
+
+### Tests ausführen
+
+Zuerst die Abhängigkeiten installieren:
+
+```bash
+pip install -r requirements.txt
+```
+
+Danach alle Tests ausführen:
+```bash
+pytest
+```
+Für eine ausführlichere Ausgabe:
+```bash
+pytest -v
+```
 ---
 
 ## 👥 Team & Beiträge
 
 | Name      | Beitrag |
 |-----------|--------------|
-| Andri Bader | ... |
-| Benjamin Sahile | ... |
+| Andri Bader | Entwicklung des Hauptcodes, Umsetzung der Funktionen, Aufbau der Datenbankmodelle, Services und Benutzeroberfläche |
+| Benjamin Sahile | README-Dokumentation, User Stories, Use Cases, Architektur- und Datenbankbeschreibung, Automatisierte Tests |
 ---
 ## 📝 Lizens
 
