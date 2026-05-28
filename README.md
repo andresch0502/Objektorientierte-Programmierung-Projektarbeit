@@ -31,7 +31,6 @@ Die Anwendung ermöglicht es Benutzern:
 
 - Fächer zu organisieren
 - Aufgaben und Abgaben zu verwalten
-- Lernzeiten zu planen
 - Deadlines übersichtlich darzustellen
 - den Lernfortschritt zu verfolgen
 - Empfehlungen für dringende Aufgaben zu erhalten
@@ -130,8 +129,8 @@ Die Anwendung verwendet **SQLModel**, um Domain-Objekte auf eine SQLite-Datenban
 - `Task`
 
 ### Beziehungen
-- Ein `User` → viele `Subject`
-- Ein `Subject` → viele `Task`
+- Ein `Subject` kann mehreren `Tasks` zugeordnet sein.
+- Ein `Task` gehört zu einem `User` und kann einem `Subject` zugeordnet werden.
   
 ---
 
@@ -198,8 +197,7 @@ Dabei gelten zum Beispiel diese Beziehungen:
 
 - Python 3.x  
 - NiceGUI  
-- SQLModel / SQLAlchemy  
-- ReportLab  
+- SQLModel
 - pytest  
 
 ---
