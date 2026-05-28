@@ -4,95 +4,96 @@
 
 ---
 
-This project demonstrates the development of a browser-based application using **NiceGUI**, focusing on clean architecture, task organization, progress tracking, and database integration via an ORM.
+Dieses Projekt zeigt die Entwicklung einer browserbasierten Anwendung mit **NiceGUI**. Der Fokus liegt auf einer sauberen Architektur, Aufgabenorganisation, Fortschrittsverfolgung und Datenbankintegration über ein ORM.
 
-It aims to:
+Das Projekt verfolgt folgende Ziele:
 
-- Cover the full process from **requirements analysis to implementation**
-- Apply advanced **Python** concepts in a web-based application
-- Support students in organizing subjects, tasks, and study sessions
-- Provide a clear overview of deadlines, progress, and urgent priorities
-- Produce clean, maintainable, and well-structured code
-- Support **teamwork and professional documentation**
+- den vollständigen Prozess von der **Anforderungsanalyse bis zur Umsetzung** abdecken
+- fortgeschrittene **Python-Konzepte** in einer webbasierten Anwendung anwenden
+- Studierende bei der Organisation von Fächern, Aufgaben und Lernzeiten unterstützen
+- eine klare Übersicht über Deadlines, Fortschritt und dringende Prioritäten bieten
+- sauberen, wartbaren und gut strukturierten Code erstellen
+- **Teamarbeit und professionelle Dokumentation** unterstützen
 
 ---
 
-## 📝 Application Requirements
+## 📝 Anforderungen der Anwendung
 
 ### Problem
 
-Students often struggle to organize their academic workload efficiently. Tasks, study sessions, and deadlines are frequently scattered across different tools, which can lead to missed deadlines, poor prioritization, and limited visibility into overall learning progress.
+Studierende haben oft Schwierigkeiten, ihre akademische Arbeitsbelastung effizient zu organisieren. Aufgaben, Lernzeiten und Deadlines sind häufig über verschiedene Tools verteilt. Dadurch können Fristen verpasst, Prioritäten falsch gesetzt und der eigene Lernfortschritt nur schwer überblickt werden.
 
 ---
 
-### Scenario
+### Szenario
 
-The application allows users to:
+Die Anwendung ermöglicht es Benutzern:
 
-- organize subjects
-- manage tasks and assignments
-- plan study times
-- display deadlines clearly
-- track their learning progress
-- receive recommendations for urgent tasks
-- view a simple study statistics overview
+- Fächer zu organisieren
+- Aufgaben und Abgaben zu verwalten
+- Lernzeiten zu planen
+- Deadlines übersichtlich darzustellen
+- den Lernfortschritt zu verfolgen
+- Empfehlungen für dringende Aufgaben zu erhalten
+- eine einfache Lernstatistik anzuzeigen
 
 ---
 ## 📖 User Stories
 
-### 1. Login User
-**As a user, I want to log in so that I can access my personal dashboard and study data.**
+### 1. Benutzer einloggen
+**Als Benutzer möchte ich mich einloggen, damit ich auf mein persönliches Dashboard und meine Studiendaten zugreifen kann.**
 
-- **Inputs:** email (`str`), password (`str`)  
-- **Outputs:** dashboard (`Dashboard`)
-
----
-
-### 2. View Dashboard
-**As a user, I want to see my dashboard in the browser app so that I can get an overview of my tasks, deadlines, and study progress.**
-
-- **Inputs:** none  
-- **Outputs:** open tasks (`list[Task]`), upcoming deadlines (`list[date]`), planned study sessions (`list[StudySession]`), progress overview (`dict[str, float]`)
+- **Eingaben:** E-Mail (`str`), Passwort (`str`)  
+- **Ausgaben:** Dashboard (`Dashboard`)
 
 ---
 
-### 3. Manage Subjects / Modules
-**As a user, I want to create and manage subjects or modules so that I can organize my studies.**
+### 2. Dashboard anzeigen
+**Als Benutzer möchte ich mein Dashboard in der Browser-App sehen, damit ich einen Überblick über meine Aufgaben, Deadlines und meinen Studienfortschritt bekomme.**
 
-- **Inputs:** subject name (`str`), description (`str`), color (`str`), exam date (`date`), optional lecturer (`str | None`), action (`str`) = `create | edit | delete` 
-- **Outputs:** created or updated subject list (`list[Subject]`)
+- **Eingaben:** keine  
+- **Ausgaben:** offene Aufgaben, bevorstehende Deadlines, Fortschrittsübersicht
+
+---
+
+### 3. Fächer / Module verwalten
+**Als Benutzer möchte ich Fächer oder Module erstellen und verwalten, damit ich mein Studium organisieren kann.**
+
+- **Eingaben:** Fachname (`str`), Beschreibung (`str`), Farbe (`str`), Prüfungsdatum (`date`), optional Dozent (`str | None`), Aktion (`str`) = `create | edit | delete`  
+- **Ausgaben:** erstellte oder aktualisierte Fächerliste
   
 ---
 
-### 4. Manage Tasks
-**As a user, I want to create and manage tasks for a subject so that I can organize assignments and deadlines.**
+### 4. Aufgaben verwalten
+**Als Benutzer möchte ich Aufgaben für ein Fach erstellen und verwalten, damit ich Abgaben und Deadlines organisieren kann.**
 
-- **Inputs:** title (`str`), description (`str`), subject Name (`str`), deadline (`date`), priority (`int`), status (`str`) = `open | in_progress | done`, action (`str`) = `create | edit | delete`
-- **Outputs:** created or updated task list (`list[Task]`)
+- **Eingaben:** Titel (`str`), Beschreibung (`str`), Fachname (`str`), Deadline (`date`), Priorität (`int`), Status (`str`) = `open | in_progress | done`, Aktion (`str`) = `create | edit | delete`
+- **Ausgaben:** erstellte oder aktualisierte Aufgabenliste
+
+---
+
+### 5. Benutzerdaten / Systemübersicht anzeigen (Admin)
+**Als Admin möchte ich Benutzer- und Systemdaten ansehen, damit ich die Anwendung überwachen und verwalten kann.**
+
+- **Eingaben:** keine oder ausgewählter Benutzer (`int | None`)
+- **Ausgaben:** Benutzerliste, Fächer, Aufgaben, Systemübersicht
 
 ---
 
-### 5. View User Data / System Overview (admin)
-**As an admin, I want to view user and system data so that I can monitor and manage the application.**
-
-- **Inputs:** none or selected user (`int | None`)
-- **Outputs:** user list (`list[User]`), subjects (`list[Subject]`), tasks (`list[Task]`), system overview (`dict[str, int]`)
-
----
 ## 🧩 Use Cases
 
 <img width="1404" height="1120" alt="image" src="https://github.com/user-attachments/assets/80f09e31-75a7-4c10-b508-19302cdae488" />
 
 
 ### Main Use Cases
-- Login (User)  
-- View Dashboard (User)  
-- Manage Subject / Modules (User)  
-- Manage Tasks (User)  
-- View User Data / System Overview (Admin)  
+- Login (Benutzer)  
+- Dashboard anzeigen (Benutzer)  
+- Fächer / Module verwalten (Benutzer)  
+- Aufgaben verwalten (Benutzer)  
+- Benutzerdaten / Systemübersicht anzeigen (Admin)   
 
 ### Actors
-- User  
+- Benutzer  
 - Admin  
 
 ---
@@ -109,21 +110,23 @@ The application allows users to:
 <img width="1223" height="695" alt="image" src="https://github.com/user-attachments/assets/1da9430e-ebb2-4398-a1ca-af227dd117ce" />
 
 
-## Layers
-- **UI:** NiceGUI (browser-based interface)
-- **Application logic:** controllers and services
-- **Persistence:** SQLite + ORM + data access (DAO)
+## Schichten
 
-## Design Decisions
-- MVC structure (Model–View–Controller)
-- Clear separation of concerns
-- Business logic independent of UI
+- **UI:** NiceGUI als browserbasierte Benutzeroberfläche
+- **Anwendungslogik:** Controller und Services
+- **Persistenz:** SQLite + ORM + Datenzugriff (DAO)
 
-## Design Patterns Used
-- **Model–View–Controller / Layered MVC Variant:** NiceGUI pages and controllers handle interaction, services implement the use cases, and persistence is separated into DAO/DB components.
-- **Data Access Object (DAO):** DAOs isolate database queries and persistence from business logic.
-- **Facade Pattern:** a database/facade component can centralize engine creation, schema setup, and session handling.
+## Architekturentscheidungen
 
+- MVC-Struktur (Model–View–Controller)
+- klare Trennung der Verantwortlichkeiten
+- Businesslogik unabhängig von der Benutzeroberfläche
+
+## Verwendete Design Patterns
+
+- **Model–View–Controller / geschichtete MVC-Variante:** NiceGUI-Seiten und Controller verarbeiten die Benutzerinteraktion, Services setzen die Use Cases um, und die Persistenz ist in DAO-/DB-Komponenten getrennt.
+- **Data Access Object (DAO):** DAOs kapseln Datenbankabfragen und Persistenzlogik von der Businesslogik.
+- **Facade Pattern:** Eine Datenbank-/Facade-Komponente kann die Erstellung der Engine, den Schemaaufbau und das Session-Handling zentralisieren.
 
 ---
 
@@ -131,17 +134,16 @@ The application allows users to:
 
 <img width="1385" height="506" alt="image" src="https://github.com/user-attachments/assets/4dd34835-a784-4e59-a393-41990b725de7" />
 
+Die Anwendung verwendet **SQLModel**, um Domain-Objekte auf eine SQLite-Datenbank abzubilden.
 
-The application uses **SQLModel** to map domain objects to a SQLite database.
-
-### Entities
+### Entitäten
 - `User`
 - `Subject`
 - `Task`
 
-### Relationships
-- One `User` → many `Subject`
-- One `Subject` has many `Task`
+### Beziehungen
+- Ein `User` → viele `Subject`
+- Ein `Subject` → viele `Task`
   
 ---
 
