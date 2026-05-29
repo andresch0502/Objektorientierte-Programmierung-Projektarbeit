@@ -250,7 +250,8 @@ study_planner/
 ```
     ### Ordner-Erklärung
 
-- `application.py`: Startet und konfiguriert die Anwendung.
+- `__main__.py`: Startet die Anwendung.
+- `application.py`: Richtet die Datenbank ein und registriert die Startseite.
 - `data_access/`: Enthält den Zugriff auf die Datenbank und die Persistenzlogik.
 - `domain/`: Enthält die Domain-Modelle bzw. Klassen der Anwendung.
 - `services/`: Enthält die Businesslogik und die Services der Anwendung.
